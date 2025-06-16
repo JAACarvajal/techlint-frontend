@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios'
 
 // Create an Axios instance with default config
 const api = axios.create({
@@ -7,27 +7,33 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-});
+})
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const exludeUrls = ['/api/auth/login', '/api/user']
+
+    if (exludeUrls.includes(config.url) === false) {
+      const token = localStorage.getItem('token')
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
     }
-    return config;
+
+    return config
   },
-  (error) => Promise.reject(error)
-);
+  (error) => Promise.reject(error),
+)
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   (error) => {
     if (error.response && error.response.status === 401) {
-      console.log('failed to authenticate, redirecting to login');
+      console.log('Failed request')
     }
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
-export default api;
+export default api

@@ -1,13 +1,11 @@
 <template>
   <div>
-      <RouterView />
+    <RouterView />
   </div>
 </template>
 
 <script>
-  export default {
-    mounted() {
-      this.$router.push('/login')
-    }
-  }
+export default {
+  mounted() {},
+}
 </script>

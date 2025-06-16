@@ -2,11 +2,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import api from './plugins/api'
+import { createPinia } from 'pinia'
 
-const app = createApp(App);
+const app = createApp(App)
 
-app.config.globalProperties.$api = api;
-app.use(router);
+app.config.globalProperties.$api = api
+app.use(router)
 
-app.mount('#app');
+const pinia = createPinia()
+app.use(pinia)
 
+app.mount('#app')
