@@ -36,3 +36,13 @@ export async function logout() {
     throw error.response ? error.response.data : error
   }
 }
+
+export async function refresh() {
+  try {
+    const response = await api.post('/api/auth/refresh')
+
+    return response
+  } catch (error) {
+    throw error.response ? error.response.data : error
+  }
+}

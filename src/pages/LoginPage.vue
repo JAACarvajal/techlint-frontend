@@ -15,7 +15,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '@/services/authService'
-import { useAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores/auth'
 
 const store = useAuthStore()
 const email = ref('')
@@ -30,8 +30,6 @@ async function checkToken() {
 
 async function submit() {
   try {
-    console.log('Submitting login with', email.value, password.value)
-
     const response = await login(email.value, password.value)
 
     localStorage.setItem('token', response.data.attributes.token)

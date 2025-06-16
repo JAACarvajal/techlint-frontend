@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-// Create an Axios instance with default config
 const api = axios.create({
   baseURL: import.meta.env.GATEWAY_API_URL || 'http://localhost:54000',
   timeout: 10000,
@@ -28,10 +27,31 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => response.data,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      console.log('Failed request')
+  async (error) => {
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (error.response?.data.error.type === 'AccessDeniedHttpException') {
+        originalRequest._retry = true
+
+        try {
+          const { data } = await api.post('/api/auth/refresh')
+          localStorage.setItem('token', data.attributes.token)
+          api.defaults.headers.Authorization = `Bearer ${data.token}`
+          originalRequest.headers.Authorization = `Bearer ${data.token}`
+          return api(originalRequest)
+        } catch {
+          localStorage.removeItem('token')
+          window.location.href = '/login'
+        }
+      }
+
+      if (error.response?.data.error.type === 'TokenExpiredException') {
+        localStorage.removeItem('token')
+        window.location.href = '/login'
+      }
     }
+
     return Promise.reject(error)
   },
 )

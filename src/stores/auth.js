@@ -1,9 +1,17 @@
 import { defineStore } from 'pinia'
 
-export const useAuthStore = defineStore('alerts', {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
     authenticated: false,
-    user: null,
+    user: {
+      attributes: {
+        email: '',
+        first_name: '',
+        is_admin: false,
+        last_name: '',
+        permissions: [],
+      },
+    },
   }),
   actions: {
     setAuthenticated(value) {
