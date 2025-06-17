@@ -10,14 +10,11 @@ export async function check() {
   }
 }
 
-export async function login(email, password) {
+export async function login(data) {
   try {
     const response = await api.post('/api/auth/login', {
       data: {
-        attributes: {
-          email: email,
-          password: password,
-        },
+        attributes: data,
       },
     })
 

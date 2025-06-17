@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { sanitize } from '@/utils/payload'
 
 const api = axios.create({
   baseURL: import.meta.env.GATEWAY_API_URL || 'http://localhost:54000',
@@ -18,6 +19,10 @@ api.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }
+    }
+
+    if (config.data !== undefined && config.data !== null) {
+      config.data.data.attributes = sanitize(config.data.data.attributes)
     }
 
     return config

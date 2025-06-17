@@ -11,6 +11,8 @@ export const useAuthStore = defineStore('auth', {
         last_name: '',
         permissions: [],
       },
+      id: null,
+      type: 'user',
     },
   }),
   actions: {
@@ -21,4 +23,5 @@ export const useAuthStore = defineStore('auth', {
       this.user = value
     },
   },
+  persist: true,
 })

@@ -14,13 +14,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { login } from '@/services/authService'
-import { useAuthStore } from '@/stores/auth'
+import { useAuth } from '@/composables/useAuth'
 
-const store = useAuthStore()
+const { authenticate } = useAuth()
+const router = useRouter()
+
 const email = ref('')
 const password = ref('')
-const router = useRouter()
 
 async function checkToken() {
   if (localStorage.getItem('token') !== null) {
@@ -30,20 +30,20 @@ async function checkToken() {
 
 async function submit() {
   try {
-    const response = await login(email.value, password.value)
-
-    localStorage.setItem('token', response.data.attributes.token)
-
-    store.setAuthenticated(true)
-
-    router.push('/home')
+    await authenticate({
+      email: email.value,
+      password: password.value,
+    })
   } catch (err) {
-    store.setAuthenticated(false)
-    alert('Login failed: ' + err)
+    alert('Login failed: ' + (err?.message || err))
   }
 }
 
-onMounted(() => {
+function init() {
   checkToken()
+}
+
+onMounted(() => {
+  init()
 })
 </script>

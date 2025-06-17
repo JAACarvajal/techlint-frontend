@@ -14,10 +14,10 @@ export async function createIp(data) {
   }
 }
 
-export async function listIp($queryParams = { page: 1 }) {
+export async function listIp(queryParams) {
   try {
     const response = await api.get('/api/ip-addresses', {
-      params: $queryParams,
+      params: queryParams,
     })
 
     return response
