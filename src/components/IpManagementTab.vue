@@ -2,7 +2,11 @@
   <div>
     <button type="button" @click.prevent="toggleModal('add')">Add</button>
     <!-- Filter -->
-    <Filter :options="IP_MANAGEMENT_SEARCH_OPTIONS" @filter="(val) => applyFilter(val)" />
+    <Filter
+      :options="IP_MANAGEMENT_SEARCH_OPTIONS"
+      @filter="(val) => applyFilter(val)"
+      :default-search="'address'"
+    />
 
     <!-- Table -->
     <Table
@@ -14,7 +18,10 @@
     />
 
     <!-- Pagination -->
-    <Pagination :pagination-data="ipManagementStore.list.meta" @page-change="getList" />
+    <Pagination
+      :pagination-data="ipManagementStore.list.meta"
+      @page-change="(page) => getList(page)"
+    />
 
     <Modal :visible="isAddModalVisible" @close="toggleModal('add', null)">
       <!-- Add Form -->
@@ -55,13 +62,13 @@ const onUpdateId = ref(null)
 const addIpForm = ref(blankForm())
 const updateIpForm = ref(blankForm())
 
-function addIpAddress(data) {
+const addIpAddress = (data) => {
   create(data)
 
   isAddModalVisible.value = false
 }
 
-function applyFilter(val) {
+const applyFilter = (val) => {
   if (val === null || val === undefined) {
     ipManagementStore.$reset()
 
@@ -77,19 +84,20 @@ function applyFilter(val) {
   getList()
 }
 
-function blankForm() {
+const blankForm = () => {
   return { address: null, label: null, comment: null }
 }
 
-async function getList() {
-  await list()
+const getList = (page) => {
+  ipManagementStore.setQueryPage(page)
+  list()
 }
 
-function resetAddForm() {
+const resetAddForm = () => {
   addIpForm.value = blankForm()
 }
 
-function sort(key) {
+const sort = (key) => {
   const formattedKey = toCamelCase(key)
   const currentSort = ipManagementStore.query.sort.split(',')
 
@@ -104,12 +112,12 @@ function sort(key) {
   const newSortKey = isDescending ? formattedKey : '-' + formattedKey
   updatedSort.unshift(newSortKey)
 
-  ipManagementStore.query.sort = updatedSort.join(',')
+  ipManagementStore.setQuerySort(updatedSort.join(','))
 
   getList()
 }
 
-function toggleModal(action, id = null) {
+const toggleModal = (action, id = null) => {
   if (action === 'add') {
     resetAddForm()
     isAddModalVisible.value = !isAddModalVisible.value
@@ -127,15 +135,15 @@ function toggleModal(action, id = null) {
   onUpdateId.value = id
 }
 
-function updateIpAddress(id, data) {
+const updateIpAddress = (id, data) => {
   update(id, data)
 
   isUpdateModalVisible.value = false
   onUpdateId.value = null
 }
 
-onMounted(async () => {
-  await getList()
+onMounted(() => {
+  getList()
 })
 </script>
 

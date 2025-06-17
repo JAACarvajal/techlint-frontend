@@ -32,9 +32,9 @@ const data = ref({
   password: '',
 })
 
-async function submit() {
+const submit = () => {
   try {
-    await register(data.value)
+    register(data.value)
 
     alert('Registration successful!')
 

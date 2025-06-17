@@ -1,3 +1,17 @@
+export const AUDIT_LOG_TABLE_HEADERS = [
+  { label: 'Actor User ID', key: 'actor_user_id' },
+  { label: 'Action', key: 'action' },
+  { label: 'Target Type', key: 'target_type' },
+  { label: 'Target ID', key: 'target_id' },
+  { label: 'Created At', key: 'created_at' },
+  { label: 'Updated At', key: 'updated_at' },
+]
+
+export const AUDIT_LOG_SEARCH_OPTIONS = [
+  { label: 'Target ID', value: 'targetId' },
+  { label: 'Actor User ID', value: 'actorUserId' },
+]
+
 export const IP_MANAGEMENT_TABLE_HEADERS = [
   { label: 'IP address', key: 'address' },
   { label: 'User ID', key: 'user_id' },

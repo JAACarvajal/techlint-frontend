@@ -1,6 +1,8 @@
 <template>
   <div>
     <h1>Hi {{ authStore.user.attributes.first_name }}</h1>
+
+    <!-- Navigation -->
     <nav>
       <NavigationBar>
         <template #ip_address>
@@ -28,15 +30,15 @@ const router = useRouter()
 const { logout } = useAuth()
 const authStore = useAuthStore()
 
-async function logoutUser() {
+const logoutUser = () => {
   try {
-    await logout()
+    logout()
   } catch (err) {
     alert('Logout failed: ' + (err?.message || err))
   }
 }
 
-async function checkToken() {
+const checkToken = async () => {
   if (!localStorage.getItem('token')) {
     router.push('/login')
   }

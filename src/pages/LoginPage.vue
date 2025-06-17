@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="submit">
+    <form @submit.prevent="login">
       <h1>Login Page</h1>
       <label for="email">Email:</label>
       <input type="text" placeholder="email" v-model="email" /><br />
@@ -18,19 +18,18 @@ import { useAuth } from '@/composables/useAuth'
 
 const { authenticate } = useAuth()
 const router = useRouter()
-
 const email = ref('')
 const password = ref('')
 
-async function checkToken() {
+const checkToken = async () => {
   if (localStorage.getItem('token') !== null) {
     router.push('/home')
   }
 }
 
-async function submit() {
+const login = () => {
   try {
-    await authenticate({
+    authenticate({
       email: email.value,
       password: password.value,
     })
@@ -39,11 +38,7 @@ async function submit() {
   }
 }
 
-function init() {
-  checkToken()
-}
-
 onMounted(() => {
-  init()
+  checkToken()
 })
 </script>

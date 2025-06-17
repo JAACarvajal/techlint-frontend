@@ -1,5 +1,6 @@
 <template>
   <table>
+    <!-- Headers -->
     <tr>
       <th
         v-for="header in props.headers"
@@ -8,13 +9,16 @@
       >
         {{ header.label }}
       </th>
-      <th>Actions</th>
+      <th v-if="withActions">Actions</th>
     </tr>
+    <!-- End of Headers -->
+
+    <!-- Rows -->
     <tr v-for="ip in props.data" :key="ip.id">
       <td v-for="header in props.headers" :key="header.key">
         {{ ip.attributes[header.key] }}
       </td>
-      <td>
+      <td v-if="withActions">
         <div>
           <button
             type="button"
@@ -35,6 +39,7 @@
         </div>
       </td>
     </tr>
+    <!-- End of rows -->
   </table>
 </template>
 
@@ -50,6 +55,10 @@ const props = defineProps({
   headers: {
     type: Array,
     default: () => [],
+  },
+  withActions: {
+    type: Boolean,
+    default: true,
   },
 })
 

@@ -13,8 +13,6 @@
 </template>
 
 <script setup>
-import { useIpManagementStore } from '@/stores/ipAddress'
-
 const props = defineProps({
   paginationData: {
     type: Object,
@@ -23,11 +21,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['page-change'])
-const ipAddressStore = useIpManagementStore()
 
-function emitPageUpdate(url) {
-  ipAddressStore.setQueryPage(new URL(url).searchParams.get('page'))
-
-  emit('page-change')
+const emitPageUpdate = (url) => {
+  emit('page-change', new URL(url).searchParams.get('page'))
 }
 </script>
