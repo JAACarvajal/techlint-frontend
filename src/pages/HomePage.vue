@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hi {{ authStore.user.attributes.first_name }}</h1>
+    <h1 class="text-3xl font-bold underline">Hello {{ authStore.user.attributes.first_name }}</h1>
 
     <!-- Navigation -->
     <nav>

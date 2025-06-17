@@ -23,53 +23,32 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useAuditLog } from '@/composables/useAuditLog'
+import { useSort } from '@/composables/useSort'
 import { useAuditLogStore } from '@/stores/auditLog'
 import { AUDIT_LOG_TABLE_HEADERS, AUDIT_LOG_SEARCH_OPTIONS } from '@/constants'
-import Table from './tables/Table.vue'
-import Pagination from './Pagination.vue'
-import Filter from './Filter.vue'
-import { toCamelCase } from '@/utils'
-
-const { list } = useAuditLog()
-const auditLogStore = useAuditLogStore()
+import Table from '@/components/tables/Table.vue'
+import Pagination from '@/components/Pagination.vue'
+import Filter from '@/components/Filter.vue'
 
 const getList = (page) => {
   auditLogStore.setQueryPage(page)
   list()
 }
 
+const { list } = useAuditLog()
+const auditLogStore = useAuditLogStore()
+const sort = useSort(auditLogStore, auditLogStore.setQuerySort, getList)
+
 const applyFilter = (val) => {
   if (val === null || val === undefined) {
     auditLogStore.$reset()
-
     getList()
-
     return
   }
 
   for (const key in val) {
     auditLogStore.setQueryFilter(key, val[key])
   }
-
-  getList()
-}
-
-const sort = (key) => {
-  const formattedKey = toCamelCase(key)
-  const currentSort = auditLogStore.query.sort.split(',')
-
-  const isDescending = currentSort.includes('-' + formattedKey)
-
-  // Remove both possible forms from the current sort
-  const updatedSort = currentSort.filter(
-    (item) => item !== formattedKey && item !== '-' + formattedKey,
-  )
-
-  // Toggle sort direction
-  const newSortKey = isDescending ? formattedKey : '-' + formattedKey
-  updatedSort.unshift(newSortKey)
-
-  auditLogStore.setQuerySort(updatedSort.join(','))
 
   getList()
 }

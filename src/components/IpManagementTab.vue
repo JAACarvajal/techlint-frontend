@@ -46,34 +46,41 @@
 import { ref, onMounted } from 'vue'
 import { useIpManagementStore } from '@/stores/ipAddress'
 import { useIpAddress } from '@/composables/useIpAddress'
-import IpForm from './forms/IpForm.vue'
-import Pagination from './Pagination.vue'
-import Filter from './Filter.vue'
-import Table from './tables/Table.vue'
-import Modal from './modals/Modal.vue'
+import { useSort } from '@/composables/useSort'
 import { IP_MANAGEMENT_TABLE_HEADERS, IP_MANAGEMENT_SEARCH_OPTIONS } from '@/constants'
-import { toCamelCase } from '@/utils'
+import IpForm from '@/components/forms/IpForm.vue'
+import Pagination from '@/components/Pagination.vue'
+import Filter from '@/components/Filter.vue'
+import Table from '@/components/tables/Table.vue'
+import Modal from '@/components/modals/Modal.vue'
 
 const { create, destroy, list, update } = useIpAddress()
 const ipManagementStore = useIpManagementStore()
 const isAddModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
 const onUpdateId = ref(null)
+
+const blankForm = () => {
+  return { address: null, label: null, comment: null }
+}
+
+const getList = (page) => {
+  ipManagementStore.setQueryPage(page)
+  list()
+}
 const addIpForm = ref(blankForm())
 const updateIpForm = ref(blankForm())
+const sort = useSort(ipManagementStore, ipManagementStore.setQuerySort, getList)
 
 const addIpAddress = (data) => {
   create(data)
-
   isAddModalVisible.value = false
 }
 
 const applyFilter = (val) => {
   if (val === null || val === undefined) {
     ipManagementStore.$reset()
-
     getList()
-
     return
   }
 
@@ -84,37 +91,8 @@ const applyFilter = (val) => {
   getList()
 }
 
-const blankForm = () => {
-  return { address: null, label: null, comment: null }
-}
-
-const getList = (page) => {
-  ipManagementStore.setQueryPage(page)
-  list()
-}
-
 const resetAddForm = () => {
   addIpForm.value = blankForm()
-}
-
-const sort = (key) => {
-  const formattedKey = toCamelCase(key)
-  const currentSort = ipManagementStore.query.sort.split(',')
-
-  const isDescending = currentSort.includes('-' + formattedKey)
-
-  // Remove both possible forms from the current sort
-  const updatedSort = currentSort.filter(
-    (item) => item !== formattedKey && item !== '-' + formattedKey,
-  )
-
-  // Toggle sort direction
-  const newSortKey = isDescending ? formattedKey : '-' + formattedKey
-  updatedSort.unshift(newSortKey)
-
-  ipManagementStore.setQuerySort(updatedSort.join(','))
-
-  getList()
 }
 
 const toggleModal = (action, id = null) => {
@@ -123,6 +101,7 @@ const toggleModal = (action, id = null) => {
     isAddModalVisible.value = !isAddModalVisible.value
     return
   }
+
   const data = ipManagementStore.list.data.find((ip) => ip.id === id)?.attributes
 
   updateIpForm.value = {
@@ -137,7 +116,6 @@ const toggleModal = (action, id = null) => {
 
 const updateIpAddress = (id, data) => {
   update(id, data)
-
   isUpdateModalVisible.value = false
   onUpdateId.value = null
 }
