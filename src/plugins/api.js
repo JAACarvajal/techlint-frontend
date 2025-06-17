@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { sanitize } from '@/utils/payload'
+import { sanitize } from '@/utils'
 
 const api = axios.create({
   baseURL: import.meta.env.GATEWAY_API_URL || 'http://localhost:54000',

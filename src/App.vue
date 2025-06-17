@@ -4,8 +4,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  mounted() {},
-}
+<script setup>
+import { RouterView } from 'vue-router'
 </script>

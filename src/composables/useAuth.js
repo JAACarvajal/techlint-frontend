@@ -11,26 +11,22 @@ export function useAuth() {
 
   async function authenticate(credentials) {
     loading.value = true
-    try {
-      const {
-        data: {
-          attributes: { token },
-        },
-      } = await login(credentials)
 
-      localStorage.setItem('token', token)
-      store.setAuthenticated(true)
+    const {
+      data: {
+        attributes: { token },
+      },
+    } = await login(credentials)
 
-      const { data: user } = await check()
-      store.setUser(user)
+    localStorage.setItem('token', token)
+    store.setAuthenticated(true)
 
-      router.push('/home')
-    } catch (err) {
-      store.setAuthenticated(false)
-      throw err
-    } finally {
-      loading.value = false
-    }
+    const { data: user } = await check()
+    store.setUser(user)
+
+    loading.value = false
+
+    router.push('/home')
   }
 
   async function logout() {

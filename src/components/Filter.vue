@@ -36,24 +36,36 @@ const props = defineProps({
     default: () => [],
   },
 })
+
+const emit = defineEmits(['filter'])
+const endDate = ref(null)
 const search = ref(null)
 const selectedDate = ref('createdAt')
-const startDate = ref(new Date().toISOString().slice(0, 10))
-const endDate = ref(new Date().toISOString().slice(0, 10))
 const selectedSearch = ref('address')
-const emit = defineEmits(['filter'])
+const startDate = ref(null)
 
 function resetFilter() {
   search.value = ''
   selectedSearch.value = 'address'
+  selectedDate.value = 'createdAt'
+  startDate.value = null
+  endDate.value = null
 
   emit('filter')
 }
 
 function handleFilterChange() {
   const filter = {}
+
   filter[selectedSearch.value] = search.value
-  filter[selectedDate.value] = startDate.value + ',' + endDate.value
+
+  if (startDate.value) {
+    filter[selectedDate.value] = startDate.value
+  }
+
+  if (endDate.value) {
+    filter[selectedDate.value] = (filter[selectedDate.value] || '') + ',' + endDate.value
+  }
 
   emit('filter', filter)
 }

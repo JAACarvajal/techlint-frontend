@@ -1,78 +1,65 @@
 <template>
   <div>
-    <!-- Add Form -->
-    <IpForm
-      :form="addIpForm"
-      @update:form="(val) => (addIpForm = val)"
-      :onSubmit="() => create(addIpForm)"
-    />
-
-    <!-- Update/Edit Form -->
-    <IpForm
-      :form="updateIpForm"
-      @update:form="(val) => (updateIpForm = val)"
-      :onSubmit="() => update(onEditId, updateIpForm)"
-      :is-show="onEdit"
-    />
-
+    <button type="button" @click.prevent="toggleModal('add')">Add</button>
     <!-- Filter -->
     <Filter :options="IP_MANAGEMENT_SEARCH_OPTIONS" @filter="(val) => applyFilter(val)" />
 
     <!-- Table -->
-    <table>
-      <tr>
-        <th v-for="header in IP_MANAGEMENT_TABLE_HEADERS" :key="header.key">{{ header.label }}</th>
-        <th>Actions</th>
-      </tr>
-      <tr v-for="ip in ipManagementStore.list.data" :key="ip.id">
-        <td v-for="header in IP_MANAGEMENT_TABLE_HEADERS" :key="header.key">
-          {{ ip.attributes[header.key] }}
-        </td>
-        <td>
-          <div>
-            <button
-              type="button"
-              @click.prevent="toggleOnEdit(ip.id)"
-              v-if="
-                authStore.user?.attributes?.is_admin || authStore.user?.id === ip.attributes.user_id
-              "
-            >
-              Edit
-            </button>
-            <button
-              v-if="authStore.user?.attributes?.is_admin"
-              type="button"
-              @click.prevent="destroy(ip.id)"
-            >
-              Remove
-            </button>
-          </div>
-        </td>
-      </tr>
-    </table>
+    <Table
+      :data="ipManagementStore.list.data"
+      :headers="IP_MANAGEMENT_TABLE_HEADERS"
+      @toggle:edit="(id) => toggleModal('update', id)"
+      @delete="(id) => destroy(id)"
+      @sort:toggle="(key) => sort(key)"
+    />
 
     <!-- Pagination -->
     <Pagination :pagination-data="ipManagementStore.list.meta" @page-change="getList" />
+
+    <Modal :visible="isAddModalVisible" @close="toggleModal('add', null)">
+      <!-- Add Form -->
+      <IpForm
+        :form="addIpForm"
+        @update:form="(data) => (addIpForm = data)"
+        :onSubmit="() => addIpAddress(addIpForm)"
+      />
+    </Modal>
+
+    <Modal :visible="isUpdateModalVisible" @close="toggleModal('update', null)">
+      <IpForm
+        :form="updateIpForm"
+        @update:form="(updatedData) => (updateIpForm = updatedData)"
+        :onSubmit="() => updateIpAddress(onUpdateId, updateIpForm)"
+      />
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
 import { useIpManagementStore } from '@/stores/ipAddress'
 import { useIpAddress } from '@/composables/useIpAddress'
 import IpForm from './forms/IpForm.vue'
 import Pagination from './Pagination.vue'
 import Filter from './Filter.vue'
+import Table from './tables/Table.vue'
+import Modal from './modals/Modal.vue'
 import { IP_MANAGEMENT_TABLE_HEADERS, IP_MANAGEMENT_SEARCH_OPTIONS } from '@/constants'
+import { toCamelCase } from '@/utils'
 
 const { create, destroy, list, update } = useIpAddress()
-const authStore = useAuthStore()
 const ipManagementStore = useIpManagementStore()
-const onEdit = ref(false)
-const onEditId = ref(null)
+const isAddModalVisible = ref(false)
+const isUpdateModalVisible = ref(false)
+const onUpdateId = ref(null)
 const addIpForm = ref(blankForm())
 const updateIpForm = ref(blankForm())
+
+function addIpAddress(data) {
+  create(data)
+
+  isAddModalVisible.value = false
+}
 
 function applyFilter(val) {
   if (val === null || val === undefined) {
@@ -87,8 +74,6 @@ function applyFilter(val) {
     ipManagementStore.setQueryFilter(key, val[key])
   }
 
-  console.log(ipManagementStore.query)
-
   getList()
 }
 
@@ -96,23 +81,57 @@ function blankForm() {
   return { address: null, label: null, comment: null }
 }
 
+async function getList() {
+  await list()
+}
+
 function resetAddForm() {
   addIpForm.value = blankForm()
 }
 
-function resetUpdateForm() {
-  updateIpForm.value = blankForm()
+function sort(key) {
+  const formattedKey = toCamelCase(key)
+  const currentSort = ipManagementStore.query.sort.split(',')
+
+  const isDescending = currentSort.includes('-' + formattedKey)
+
+  // Remove both possible forms from the current sort
+  const updatedSort = currentSort.filter(
+    (item) => item !== formattedKey && item !== '-' + formattedKey,
+  )
+
+  // Toggle sort direction
+  const newSortKey = isDescending ? formattedKey : '-' + formattedKey
+  updatedSort.unshift(newSortKey)
+
+  ipManagementStore.query.sort = updatedSort.join(',')
+
+  getList()
 }
 
-function toggleOnEdit(id) {
-  onEdit.value = !onEdit.value
-  onEditId.value = id
+function toggleModal(action, id = null) {
+  if (action === 'add') {
+    resetAddForm()
+    isAddModalVisible.value = !isAddModalVisible.value
+    return
+  }
+  const data = ipManagementStore.list.data.find((ip) => ip.id === id)?.attributes
+
+  updateIpForm.value = {
+    address: data?.address || null,
+    label: data?.label || null,
+    comment: data?.comment || null,
+  }
+
+  isUpdateModalVisible.value = !isUpdateModalVisible.value
+  onUpdateId.value = id
 }
 
-async function getList() {
-  await list()
-  resetAddForm()
-  resetUpdateForm()
+function updateIpAddress(id, data) {
+  update(id, data)
+
+  isUpdateModalVisible.value = false
+  onUpdateId.value = null
 }
 
 onMounted(async () => {
