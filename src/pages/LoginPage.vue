@@ -14,7 +14,7 @@
           <Input
             :input-data="email"
             :input-attrs="emailAttrs"
-            :error="errors.email"
+            :error="validationErrors.email"
             :label="'Email'"
             :placeholder="'Enter email address'"
             :name="'email'"
@@ -25,7 +25,7 @@
           <Input
             :input-data="password"
             :input-attrs="passwordAttrs"
-            :error="errors.password"
+            :error="validationErrors.password"
             :type="'password'"
             :label="'Password'"
             :placeholder="'Enter password'"
@@ -43,7 +43,7 @@
             @submit="() => login()"
           />
           <p class="text-xs mt-3 text-[#444250]">
-            Don’t have an account yet? <a class="text-[#705ABF]" href="/register">Register here</a>
+            Don't have an account yet? <a class="text-[#705ABF]" href="/register">Register here</a>
           </p>
         </div>
       </template>
@@ -60,17 +60,23 @@ import { useAuth } from '@/composables/useAuth'
 import Form from '@/components/forms/Form.vue'
 import Input from '@/components/inputs/Input.vue'
 import Button from '@/components/buttons/Button.vue'
-import Toast from '@/components/toasts/Toast.vue'
+import { useToastStore } from '@/stores/toast'
 
-const { authenticate, loading } = useAuth()
+const { authenticate, loading, errors } = useAuth()
 const router = useRouter()
 
 const schema = yup.object({
-  email: yup.string().required().email(),
-  password: yup.string().required(),
+  email: yup.string().required().email().label('Email address'),
+  password: yup.string().required().label('Password'),
 })
+const toast = useToastStore()
 const validationConfig = { validateOnModelUpdate: false }
-const { errors, defineField, handleSubmit, values } = useForm({ validationSchema: schema })
+const {
+  errors: validationErrors,
+  defineField,
+  handleSubmit,
+  values,
+} = useForm({ validationSchema: schema })
 const [email, emailAttrs] = defineField('email', validationConfig)
 const [password, passwordAttrs] = defineField('password', validationConfig)
 
@@ -90,11 +96,14 @@ const onValidationError = ({ errors }) => {
 }
 
 const onValidationSuccess = async () => {
-  try {
-    await authenticate(values)
-  } catch (err) {
-    alert(err.message)
+  await authenticate(values)
+
+  if (errors.value) {
+    toast.showToast(errors.value.message, 'error')
+    return
   }
+
+  toast.showToast('Logged in successfully', 'success')
 }
 
 const login = handleSubmit(onValidationSuccess, onValidationError)

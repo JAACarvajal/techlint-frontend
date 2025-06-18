@@ -1,22 +1,32 @@
 <template>
-  <div
-    v-if="show"
-    class="fixed top-6 right-6 z-50 bg-white shadow-lg rounded-lg px-6 py-4 flex items-center gap-2 border border-gray-300 transition-opacity duration-300"
-  >
-    <span class="text-green-600 font-semibold">✔</span>
-    <span>{{ message }}</span>
-    <button class="ml-4 text-gray-400 hover:text-gray-600" @click="show = false">&times;</button>
+  <div class="fixed top-6 right-6 z-50 flex flex-col gap-2">
+    <div
+      v-for="toast in toasts"
+      :key="toast.id"
+      :class="[
+        'bg-white flex items-center px-4 py-2 rounded shadow-lg min-w-[300px] min-h-[70px] transition-all duration-300 animate-slide-top-in',
+        toastType(toast),
+      ]"
+    >
+      <span v-if="toast.type === 'success'" class="mr-2">✔</span>
+      <span v-else-if="toast.type === 'error'" class="mr-2"> &times; </span>
+      <span>{{ toast.message }}</span>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useToastStore } from '@/stores/toast'
 
-const props = defineProps({
-  message: { type: String, default: '' },
-  duration: { type: Number, default: 3000 },
-  type: { type: String, default: 'success' },
-})
+const toastStore = useToastStore()
+const { toasts } = storeToRefs(toastStore)
 
-const show = ref(true)
+const toastType = (toast) => {
+  return toast.type === 'success'
+    ? 'text-green-700 border border-green-300'
+    : toast.type === 'error'
+      ? 'text-red-700 border border-red-300'
+      : 'text-gray-900 border border-gray-300'
+}
 </script>

@@ -2,7 +2,7 @@
   <div class="mb-8">
     <div class="relative">
       <!-- Label -->
-      <label class="font-medium text-[#444250] text-[14px]" :for="props.name">{{
+      <label class="font-medium text-[#444250] text-[15px]" :for="props.name">{{
         props.label
       }}</label>
 
@@ -11,7 +11,7 @@
         v-bind="props.inputAttrs"
         :name="props.name"
         ref="inputElement"
-        class="text-[14px] mt-1.5 px-4 py-2.5 border border-[#E9EFF5] rounded-md w-full"
+        class="text-[14px] mt-1.5 px-4 py-2.5 border border-[#E9EFF5] bg-[#FAFAFA] rounded-md w-full font-medium text-[#444250] focus:outline-none focus:border-[#705ABF]"
         :type="inputType"
         :placeholder="props.placeholder"
         :value="props.inputData"
@@ -27,8 +27,9 @@
         </div>
       </div>
     </div>
+
     <!-- Error message -->
-    <div class="text-xs text-red-400 mt-1" v-show="props.error">
+    <div class="text-[14px] text-red-400 font-medium mt-1" v-show="props.error">
       <p>{{ props.error }}</p>
     </div>
   </div>

@@ -5,8 +5,8 @@ export async function check() {
     const response = await api.get('/api/auth/check')
 
     return response
-  } catch (error) {
-    throw error.response ? error.response.data : error
+  } catch (err) {
+    throw new Error(err.response.data.error.message)
   }
 }
 
@@ -19,8 +19,8 @@ export async function login(data) {
     })
 
     return response
-  } catch (err) {
-    throw new Error(err.response.data.error.message)
+  } catch (error) {
+    return error.response.data
   }
 }
 
@@ -29,8 +29,8 @@ export async function logout() {
     const response = await api.post('/api/auth/logout')
 
     return response
-  } catch (error) {
-    throw error.response ? error.response.data : error
+  } catch (err) {
+    throw new Error(err.response.data.error.message)
   }
 }
 
@@ -39,7 +39,7 @@ export async function refresh() {
     const response = await api.post('/api/auth/refresh')
 
     return response
-  } catch (error) {
-    throw error.response ? error.response.data : error
+  } catch (err) {
+    throw new Error(err.response.data.error.message)
   }
 }

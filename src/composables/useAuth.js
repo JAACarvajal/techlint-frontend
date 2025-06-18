@@ -8,33 +8,25 @@ export function useAuth() {
   const router = useRouter()
 
   const loading = ref(false)
-  const error = ref(null)
+  const errors = ref(null)
 
   async function authenticate(credentials) {
     loading.value = true
 
     try {
-      const {
-        data: {
-          attributes: { token },
-        },
-      } = await login(credentials)
+      const loginResponse = await login(credentials)
+      if (loginResponse.error) throw loginResponse.error
 
-      localStorage.setItem('token', token)
+      localStorage.setItem('token', loginResponse.data.attributes.token)
       store.setAuthenticated(true)
 
-      const { data: user } = await check()
-      store.setUser(user)
+      const checkResponse = await check()
+      if (checkResponse.error) throw checkResponse.error
 
-      loading.value = false
-
+      store.setUser(checkResponse.data)
       router.push('/home')
     } catch (err) {
-      error.value = err.message
-
-      loading.value = false
-
-      throw err
+      errors.value = err
     } finally {
       loading.value = false
     }
@@ -42,16 +34,17 @@ export function useAuth() {
 
   async function logout() {
     loading.value = true
+
     try {
-      await logoutUser()
+      const response = await logoutUser()
+      if (response.error) throw response.error
 
       store.setAuthenticated(false)
       localStorage.removeItem('token')
 
       router.push('/login')
     } catch (err) {
-      store.setAuthenticated(false)
-      throw err
+      errors.value = err
     } finally {
       loading.value = false
     }
@@ -59,7 +52,7 @@ export function useAuth() {
 
   return {
     authenticate,
-    error,
+    errors,
     loading,
     logout,
   }

@@ -1,6 +1,6 @@
 import api from '../plugins/api'
 
-export async function register(data) {
+export async function registerUser(data) {
   try {
     const response = await api.post('/api/users', {
       data: {
@@ -10,6 +10,6 @@ export async function register(data) {
 
     return response
   } catch (error) {
-    throw error.response ? error.response.data : error
+    return error.response.data
   }
 }

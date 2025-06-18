@@ -25,17 +25,22 @@ import { useAuthStore } from '@/stores/auth'
 import NavigationBar from '@/components/NavigationBar.vue'
 import IpManagementTab from '@/components/IpManagementTab.vue'
 import AuditLogTab from '@/components/AuditLogTab.vue'
+import { useToastStore } from '@/stores/toast'
 
 const router = useRouter()
-const { logout } = useAuth()
+const { errors, logout } = useAuth()
 const authStore = useAuthStore()
+const toast = useToastStore()
 
-const logoutUser = () => {
-  try {
-    logout()
-  } catch (err) {
-    alert('Logout failed: ' + (err?.message || err))
+const logoutUser = async () => {
+  await logout()
+
+  if (errors.value) {
+    toast.showToast(errors.value.message, 'error')
+    return
   }
+
+  toast.showToast('Logged out successfully', 'success')
 }
 
 const checkToken = async () => {
