@@ -33,10 +33,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response.data,
   async (error) => {
+    const excludeAccessDeniedUrls = ['/api/auth/login']
     const originalRequest = error.config
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (error.response?.data.error.type === 'AccessDeniedHttpException') {
+      if (
+        error.response?.data.error.type === 'AccessDeniedHttpException' &&
+        !excludeAccessDeniedUrls.includes(originalRequest.url)
+      ) {
         originalRequest._retry = true
 
         try {
@@ -45,7 +49,9 @@ api.interceptors.response.use(
           api.defaults.headers.Authorization = `Bearer ${data.token}`
           originalRequest.headers.Authorization = `Bearer ${data.token}`
           return api(originalRequest)
-        } catch {
+        } catch (err) {
+          console.log(err)
+
           localStorage.removeItem('token')
           window.location.href = '/login'
         }

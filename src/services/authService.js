@@ -19,8 +19,8 @@ export async function login(data) {
     })
 
     return response
-  } catch (error) {
-    throw error.response ? error.response.data : error
+  } catch (err) {
+    throw new Error(err.response.data.error.message)
   }
 }
 

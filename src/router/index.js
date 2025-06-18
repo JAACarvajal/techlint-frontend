@@ -5,9 +5,9 @@ import RegisterPage from '@/pages/RegisterPage.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },
-  { path: '/login', component: LoginPage },
-  { path: '/home', component: HomePage },
-  { path: '/register', component: RegisterPage },
+  { path: '/login', component: LoginPage, meta: { title: 'Login' } },
+  { path: '/home', component: HomePage, meta: { title: 'Home' } },
+  { path: '/register', component: RegisterPage, meta: { title: 'Register' } },
 ]
 
 const router = createRouter({

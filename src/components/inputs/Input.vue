@@ -1,25 +1,35 @@
 <template>
-  <div class="relative">
-    <label class="font-medium text-[#444250] text-[14px]" :for="props.name">{{
-      props.label
-    }}</label>
-    <input
-      :name="props.name"
-      ref="inputElement"
-      class="text-[14px] mt-1.5 mb-8 px-2 py-2.5 border border-[#E9EFF5] rounded-md w-full"
-      :type="inputType"
-      :placeholder="props.placeholder"
-      :value="props.inputData"
-      @input="emit('update:data', $event.target.value)"
-    />
-    <div
-      class="absolute inset-y-0 right-3 top-0 bottom-1 flex items-center cursor-pointer"
-      @click.prevent="toggleInputVisibility"
-    >
-      <div v-if="props.toggleable">
-        <EyeIcon v-if="!showInput" />
-        <EyeIconSelected v-if="showInput" />
+  <div class="mb-8">
+    <div class="relative">
+      <!-- Label -->
+      <label class="font-medium text-[#444250] text-[14px]" :for="props.name">{{
+        props.label
+      }}</label>
+
+      <!-- Input -->
+      <input
+        v-bind="props.inputAttrs"
+        :name="props.name"
+        ref="inputElement"
+        class="text-[14px] mt-1.5 px-4 py-2.5 border border-[#E9EFF5] rounded-md w-full"
+        :type="inputType"
+        :placeholder="props.placeholder"
+        :value="props.inputData"
+        @input="emit('update:data', $event.target.value)"
+      />
+      <div
+        class="absolute inset-y-0 right-3 top-7.5 flex items-center cursor-pointer"
+        @click.prevent="toggleInputVisibility"
+      >
+        <div v-if="props.toggleable">
+          <EyeIcon v-if="!showInput" />
+          <EyeIconSelected v-if="showInput" />
+        </div>
       </div>
+    </div>
+    <!-- Error message -->
+    <div class="text-xs text-red-400 mt-1" v-show="props.error">
+      <p>{{ props.error }}</p>
     </div>
   </div>
 </template>
@@ -30,9 +40,17 @@ import EyeIcon from '@/components/icons/icon_eye.svg'
 import EyeIconSelected from '@/components/icons/icon_eye_selected.svg'
 
 const props = defineProps({
+  error: {
+    type: String,
+    default: '',
+  },
   label: {
     type: String,
     default: 'Input',
+  },
+  inputAttrs: {
+    type: Object,
+    default: () => ({}),
   },
   inputData: {
     type: String,

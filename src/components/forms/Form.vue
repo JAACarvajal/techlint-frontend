@@ -1,5 +1,5 @@
 <template>
-  <form v-if="isShow" @submit.prevent="onSubmit">
+  <form v-if="isShow">
     <slot name="form-header"></slot>
     <slot name="form-body"></slot>
   </form>
