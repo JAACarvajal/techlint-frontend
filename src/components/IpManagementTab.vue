@@ -1,12 +1,12 @@
 <template>
   <div>
-    <button type="button" @click.prevent="toggleModal('add')">Add</button>
+    <!-- <button type="button" @click.prevent="toggleModal('add')">Add</button> -->
     <!-- Filter -->
-    <Filter
+    <!-- <Filter
       :options="IP_MANAGEMENT_SEARCH_OPTIONS"
       @filter="(fitlers) => filter(fitlers)"
       :default-search="'address'"
-    />
+    /> -->
 
     <!-- Table -->
     <Table

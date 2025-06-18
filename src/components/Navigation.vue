@@ -1,16 +1,25 @@
 <template>
-  <div class="tabs">
-    <div class="tab-headers">
+  <div class="tabs h-auto">
+    <!-- Navigation buttons -->
+    <div class="flex shadow-md px-14">
       <button
         v-for="(tab, idx) in tabs"
         :key="tab.name"
-        :class="{ active: idx === activeTab, hidden: !tab.visible }"
+        :class="[
+          'px-4 py-5 cursor-pointer text-md transition-[border] duration-300 border-b-2',
+          idx === activeTab
+            ? 'text-[#705ABF] border-b-[#705ABF] font-bold'
+            : 'border-b-transparent',
+          !tab.visible ? 'hidden' : '',
+        ]"
         @click="activeTab = idx"
       >
         {{ tab.label }}
       </button>
     </div>
-    <div class="tab-content">
+
+    <!-- Slot content -->
+    <div class="p-12">
       <slot :name="tabs[activeTab].name"></slot>
     </div>
   </div>
