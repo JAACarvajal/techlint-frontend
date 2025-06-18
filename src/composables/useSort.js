@@ -1,6 +1,6 @@
 import { toCamelCase } from '@/utils'
 
-export function useSort(store, setSort, getList) {
+export function useSort(store, getList) {
   return (key) => {
     const formattedKey = toCamelCase(key)
     const currentSort = store.query.sort.split(',')
@@ -10,7 +10,7 @@ export function useSort(store, setSort, getList) {
     )
     const newSortKey = isDescending ? formattedKey : '-' + formattedKey
     updatedSort.unshift(newSortKey)
-    setSort(updatedSort.join(','))
+    store.setQuerySort(updatedSort.join(','))
     getList()
   }
 }

@@ -4,7 +4,7 @@
     <!-- Filter -->
     <Filter
       :options="IP_MANAGEMENT_SEARCH_OPTIONS"
-      @filter="(val) => applyFilter(val)"
+      @filter="(fitlers) => filter(fitlers)"
       :default-search="'address'"
     />
 
@@ -12,9 +12,9 @@
     <Table
       :data="ipManagementStore.list.data"
       :headers="IP_MANAGEMENT_TABLE_HEADERS"
-      @toggle:edit="(id) => toggleModal('update', id)"
-      @delete="(id) => destroy(id)"
-      @sort:toggle="(key) => sort(key)"
+      @toggle:edit="(ipId) => toggleModal('update', ipId)"
+      @delete="(ipId) => destroy(ipId)"
+      @sort:toggle="(sorts) => sort(sorts)"
     />
 
     <!-- Pagination -->
@@ -23,32 +23,34 @@
       @page-change="(page) => getList(page)"
     />
 
-    <Modal :visible="isAddModalVisible" @close="toggleModal('add', null)">
-      <!-- Add Form -->
-      <IpForm
-        :form="addIpForm"
-        @update:form="(data) => (addIpForm = data)"
-        :onSubmit="() => addIpAddress(addIpForm)"
-      />
-    </Modal>
+    <!-- Modals for add and update -->
+    <Modal :visible="isFormModalVisible" @close="toggleModal(formMode)">
+      <Form :onSubmit="() => (formMode === 'add' ? addIpAddress() : updateIpAddress())">
+        <template #form-body>
+          <label for="address">Address:</label>
+          <input type="text" placeholder="Address" v-model="currentForm.address" /><br />
 
-    <Modal :visible="isUpdateModalVisible" @close="toggleModal('update', null)">
-      <IpForm
-        :form="updateIpForm"
-        @update:form="(updatedData) => (updateIpForm = updatedData)"
-        :onSubmit="() => updateIpAddress(onUpdateId, updateIpForm)"
-      />
+          <label for="label">Label:</label>
+          <input type="text" placeholder="Label" v-model="currentForm.label" /><br />
+
+          <label for="comment">Comment:</label>
+          <input type="text" placeholder="Comment" v-model="currentForm.comment" /><br />
+
+          <button type="submit">{{ formMode === 'add' ? 'Add' : 'Update' }}</button>
+        </template>
+      </Form>
     </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useIpManagementStore } from '@/stores/ipAddress'
 import { useIpAddress } from '@/composables/useIpAddress'
 import { useSort } from '@/composables/useSort'
+import { useFilter } from '@/composables/useFilter'
 import { IP_MANAGEMENT_TABLE_HEADERS, IP_MANAGEMENT_SEARCH_OPTIONS } from '@/constants'
-import IpForm from '@/components/forms/IpForm.vue'
+import Form from '@/components/forms/Form.vue'
 import Pagination from '@/components/Pagination.vue'
 import Filter from '@/components/Filter.vue'
 import Table from '@/components/tables/Table.vue'
@@ -58,6 +60,11 @@ const { create, destroy, list, update } = useIpAddress()
 const ipManagementStore = useIpManagementStore()
 const isAddModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
+const isFormModalVisible = computed(() => isAddModalVisible.value || isUpdateModalVisible.value)
+const formMode = computed(() => (isAddModalVisible.value ? 'add' : 'update'))
+const currentForm = computed(() =>
+  formMode.value === 'add' ? addIpForm.value : updateIpForm.value,
+)
 const onUpdateId = ref(null)
 
 const blankForm = () => {
@@ -70,25 +77,12 @@ const getList = (page) => {
 }
 const addIpForm = ref(blankForm())
 const updateIpForm = ref(blankForm())
-const sort = useSort(ipManagementStore, ipManagementStore.setQuerySort, getList)
+const sort = useSort(ipManagementStore, getList)
+const filter = useFilter(ipManagementStore, getList)
 
-const addIpAddress = (data) => {
-  create(data)
+const addIpAddress = () => {
+  create(addIpForm.value)
   isAddModalVisible.value = false
-}
-
-const applyFilter = (val) => {
-  if (val === null || val === undefined) {
-    ipManagementStore.$reset()
-    getList()
-    return
-  }
-
-  for (const key in val) {
-    ipManagementStore.setQueryFilter(key, val[key])
-  }
-
-  getList()
 }
 
 const resetAddForm = () => {
@@ -114,8 +108,8 @@ const toggleModal = (action, id = null) => {
   onUpdateId.value = id
 }
 
-const updateIpAddress = (id, data) => {
-  update(id, data)
+const updateIpAddress = () => {
+  update(onUpdateId.value, updateIpForm.value)
   isUpdateModalVisible.value = false
   onUpdateId.value = null
 }

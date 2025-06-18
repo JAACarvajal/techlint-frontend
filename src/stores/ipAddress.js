@@ -27,6 +27,9 @@ export const useIpManagementStore = defineStore('ipManagement', {
     setQuery(value) {
       this.query = value
     },
+    setQuerySort(value) {
+      this.query.sort = value
+    },
     setQueryPage(value) {
       this.query.page = value
     },
