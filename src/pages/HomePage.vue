@@ -1,7 +1,7 @@
 <template>
-  <div class="w-screen h-screen">
+  <div class="min-h-screen">
     <!-- Header -->
-    <HeaderSection class="flex justify-between h-14 bg-[#705ABF] p-2" />
+    <HeaderSection class="flex justify-between h-14 bg-[#705ABF] py-2 px-4 w-full" />
 
     <!-- Navigation -->
     <Navigation>

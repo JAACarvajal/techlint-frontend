@@ -1,80 +1,120 @@
 <template>
-  <div class="w-full rounded-lg">
+  <div
+    class="border-t-1 rounded-lg flex-1 flex flex-col justify-start overflow-hidden shadow-md w-full bg-white"
+  >
     <table class="w-full">
-      <tbody>
-        <!-- Headers -->
+      <!-- Column group -->
+      <slot name="column-group"></slot>
+
+      <!-- Headers -->
+      <thead>
         <tr class="border border-[#444250]">
           <th
-            v-for="header in props.headers"
-            class="text-[14px] px-4 py-6 text-white bg-[#444250] font-medium"
+            v-for="header in headers"
             :key="header.key"
-            @click.prevent="emit('sort:toggle', header.key)"
+            class="text-[14px] px-4 py-6 text-white bg-[#444250] font-medium cursor-pointer"
+            @click.prevent="onSort(header.key)"
           >
-            {{ header.label }}
+            <span>⮟&nbsp;&nbsp;{{ header.label }}</span>
           </th>
-          <th class="p-3 text-white bg-[#444250]" v-if="withActions">Actions</th>
+          <th v-if="withActions" class="text-[14px] px-4 py-6 text-white bg-[#444250] font-medium">
+            Actions
+          </th>
         </tr>
-        <!-- End of Headers -->
+      </thead>
 
-        <!-- Rows -->
-        <tr v-for="ip in props.data" :key="ip.id" class="text-[#444250] border-1 border-[#e9eff5]">
-          <td v-for="header in props.headers" :key="header.key" class="px-4 py-6 text-center">
-            {{ ip.attributes[header.key] }}
-          </td>
-          <td v-if="withActions">
-            <div class="flex flex-row justify-center">
-              <button
-                type="button"
-                @click.prevent="emit('toggle:edit', ip.id)"
-                v-if="
-                  authStore.user?.attributes?.is_admin ||
-                  authStore.user?.id === ip.attributes.user_id
-                "
-                class="cursor-pointer m-1"
-              >
-                <Edit />
-              </button>
-              <button
-                v-if="authStore.user?.attributes?.is_admin"
-                type="button"
-                @click.prevent="emit('delete', ip.id)"
-                class="cursor-pointer m-1"
-              >
-                <Delete />
-              </button>
+      <!-- Loading Rows -->
+      <tbody v-if="loading">
+        <tr>
+          <td :colspan="colspan" class="text-center">
+            <div class="flex justify-center py-[315px]">
+              <SpinningLoader />
             </div>
           </td>
         </tr>
-        <!-- End of rows -->
+      </tbody>
+      <!-- Data Rows -->
+      <tbody v-else>
+        <tr v-for="ip in data" :key="ip.id" class="text-[#444250] border-1 border-[#e9eff5]">
+          <td
+            v-for="header in headers"
+            :key="header.key"
+            :class="[
+              'px-6 py-2 text-center h-16',
+              leftAlignedColumns.includes(header.key) ? 'text-left' : '',
+            ]"
+          >
+            {{ ip.attributes[header.key] }}
+          </td>
+          <td v-if="withActions" class="px-6 py-2 text-center">
+            <div class="flex flex-row justify-center">
+              <ActionButton v-if="canEdit(ip)" icon="edit" :onClick="() => onEdit(ip.id)" />
+              <ActionButton v-if="canDelete" icon="delete" :onClick="() => onDelete(ip.id)" />
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
+
+  <!-- Pagination -->
+  <Pagination :pagination-data="paginationData" @page:change="onPageChange" />
 </template>
 
-<script setup>
+<script setup lang="jsx">
+import { computed, defineComponent } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import Pagination from '@/components/Pagination.vue'
 import Edit from '@/components/icons/edit.svg'
 import EditHover from '@/components/icons/edit_hover.svg'
 import Delete from '@/components/icons/delete.svg'
 import DeleteHover from '@/components/icons/delete_hover.svg'
+import SpinningLoader from '@/components/loaders/spinning_icon_black.svg'
 
-const emit = defineEmits(['toggle:edit', 'delete', 'sort:toggle'])
 const props = defineProps({
-  data: {
-    type: Array,
-    default: () => [],
-  },
-  headers: {
-    type: Array,
-    default: () => [],
-  },
-  withActions: {
-    type: Boolean,
-    default: true,
-  },
+  data: { type: Array, default: () => [] },
+  headers: { type: Array, default: () => [] },
+  loading: { type: Boolean, default: false },
+  withActions: { type: Boolean, default: true },
+  paginationData: { type: Object, default: () => ({}) },
 })
 
+const leftAlignedColumns = ['comment', 'label']
+const emit = defineEmits(['toggle:edit', 'delete', 'sort:toggle', 'page:change'])
 const authStore = useAuthStore()
-</script>
+const canDelete = computed(() => authStore.user?.attributes?.is_admin)
+const colspan = computed(() => props.headers.length + (props.withActions ? 1 : 0))
 
-<style lang="scss" scoped></style>
+function canEdit(ip) {
+  return authStore.user?.attributes?.is_admin || authStore.user?.id === ip.attributes.user_id
+}
+
+function onSort(key) {
+  emit('sort:toggle', key)
+}
+function onEdit(id) {
+  emit('toggle:edit', id)
+}
+function onDelete(id) {
+  emit('delete', id)
+}
+function onPageChange(page) {
+  emit('page:change', page)
+}
+
+const ActionButton = defineComponent({
+  props: { icon: String, onClick: Function },
+  setup(props) {
+    return () => (
+      <button type="button" class="group cursor-pointer m-1" onClick={props.onClick}>
+        <span class="block group-hover:hidden">
+          {props.icon === 'edit' ? <Edit /> : <Delete />}
+        </span>
+        <span class="hidden group-hover:block">
+          {props.icon === 'edit' ? <EditHover /> : <DeleteHover />}
+        </span>
+      </button>
+    )
+  },
+})
+</script>

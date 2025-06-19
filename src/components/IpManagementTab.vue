@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-11/12 m-12">
     <!-- <button type="button" @click.prevent="toggleModal('add')">Add</button> -->
     <!-- Filter -->
     <!-- <Filter
@@ -12,16 +12,25 @@
     <Table
       :data="ipManagementStore.list.data"
       :headers="IP_MANAGEMENT_TABLE_HEADERS"
+      :pagination-data="ipManagementStore.list.meta"
+      :loading="loading"
+      @page:change="(page) => updatePage(page)"
       @toggle:edit="(ipId) => toggleModal('update', ipId)"
       @delete="(ipId) => destroy(ipId)"
       @sort:toggle="(sorts) => sort(sorts)"
-    />
-
-    <!-- Pagination -->
-    <Pagination
-      :pagination-data="ipManagementStore.list.meta"
-      @page-change="(page) => getList(page)"
-    />
+    >
+      <template #column-group>
+        <colgroup>
+          <col class="max-w-[330px]" />
+          <col class="max-w-[146px]" />
+          <col class="max-w-[175px]" />
+          <col class="max-w-[500px]" />
+          <col class="max-w-[400px]" />
+          <col class="max-w-[400px]" />
+          <col class="max-w-[300px]" />
+        </colgroup>
+      </template>
+    </Table>
 
     <!-- Modals for add and update -->
     <Modal :visible="isFormModalVisible" @close="toggleModal(formMode)">
@@ -50,13 +59,13 @@ import { useIpAddress } from '@/composables/useIpAddress'
 import { useSort } from '@/composables/useSort'
 import { useFilter } from '@/composables/useFilter'
 import { IP_MANAGEMENT_TABLE_HEADERS, IP_MANAGEMENT_SEARCH_OPTIONS } from '@/constants'
+import { scrollToElement } from '@/utils'
 import Form from '@/components/forms/Form.vue'
-import Pagination from '@/components/Pagination.vue'
 import Filter from '@/components/Filter.vue'
 import Table from '@/components/tables/Table.vue'
 import Modal from '@/components/modals/Modal.vue'
 
-const { create, destroy, list, update } = useIpAddress()
+const { create, destroy, loading, list, update } = useIpAddress()
 const ipManagementStore = useIpManagementStore()
 const isAddModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
@@ -71,9 +80,11 @@ const blankForm = () => {
   return { address: null, label: null, comment: null }
 }
 
-const getList = (page) => {
+const getList = async (page) => {
   ipManagementStore.setQueryPage(page)
-  list()
+  await list()
+
+  // document.getElementById('pagination').scrollIntoView({ behavior: 'smooth' })
 }
 const addIpForm = ref(blankForm())
 const updateIpForm = ref(blankForm())
@@ -114,9 +125,11 @@ const updateIpAddress = () => {
   onUpdateId.value = null
 }
 
+const updatePage = async (page) => {
+  await getList(page)
+  scrollToElement('#pagination')
+}
 onMounted(() => {
   getList()
 })
 </script>
-
-<style lang="scss" scoped></style>

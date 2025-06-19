@@ -6,9 +6,9 @@
 </template>
 
 <script setup>
-import Logo from '@/components/icons/logo.svg'
 import { useAuth } from '@/composables/useAuth'
 import { useToastStore } from '@/stores/toast'
+import Logo from '@/components/icons/logo.svg'
 
 const props = defineProps({
   class: {

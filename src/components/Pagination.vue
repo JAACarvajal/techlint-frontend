@@ -1,28 +1,35 @@
 <template>
-  <div class="pagination">
+  <div id="pagination" class="flex justify-center pt-10">
     <a
-      v-for="(page, index) in props.paginationData.links"
+      v-for="(page, index) in paginationData.links"
       :key="index"
-      style="padding: 0 10px"
-      href="#"
-      @click.prevent="page.url && emitPageUpdate(page.url)"
-      v-html="page.label"
+      :class="[
+        'text-[#705ABF] mx-1.5 px-2.5 rounded-xs font-medium hover:bg-[#544191] hover:text-white duration-100 cursor-pointer',
+        page.active ? 'bg-[#544191] text-white' : '',
+      ]"
+      @click.prevent="emitPageUpdate(page.url)"
     >
+      {{ pageText(page.label) }}
     </a>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   paginationData: {
     type: Object,
     required: true,
   },
 })
 
-const emit = defineEmits(['page-change'])
-
+const emit = defineEmits(['page:change'])
 const emitPageUpdate = (url) => {
-  emit('page-change', new URL(url).searchParams.get('page'))
+  emit('page:change', new URL(url).searchParams.get('page'))
+}
+
+const pageText = (label) => {
+  if (label === 'Next &raquo;') return '⮞'
+  if (label === '&laquo; Previous') return '⮜'
+  return label
 }
 </script>

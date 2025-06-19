@@ -1,7 +1,7 @@
 <template>
-  <div class="tabs h-auto">
+  <div>
     <!-- Navigation buttons -->
-    <div class="flex shadow-md px-14">
+    <div class="flex shadow-md px-20 bg-white">
       <button
         v-for="(tab, idx) in tabs"
         :key="tab.name"
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Slot content -->
-    <div class="p-12">
+    <div class="flex justify-center h-full">
       <slot :name="tabs[activeTab].name"></slot>
     </div>
   </div>
@@ -36,34 +36,3 @@ const tabs = [
   { name: 'audit_log', label: 'Audit Logs', visible: authStore.user?.attributes?.is_admin },
 ]
 </script>
-
-<style scoped>
-.hidden {
-  display: none;
-}
-.tabs {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.tab-headers {
-  display: flex;
-  border-bottom: 1px solid #ccc;
-}
-.tab-headers button {
-  background: none;
-  border: none;
-  padding: 12px 24px;
-  cursor: pointer;
-  font-size: 16px;
-  border-bottom: 2px solid transparent;
-  transition: border 0.2s;
-}
-.tab-headers button.active {
-  border-bottom: 2px solid #42b983;
-  color: #42b983;
-  font-weight: bold;
-}
-.tab-content {
-  padding: 16px;
-}
-</style>
