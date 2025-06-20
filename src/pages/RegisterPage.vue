@@ -62,6 +62,7 @@
             :type="'submit'"
             :loading="loading"
             :disabled="loading"
+            :class-name="'text-[14px] font-medium px-2 py-2.5 text-white mt-4'"
             @submit="() => submit()"
           />
           <p class="text-xs mt-3 text-[#444250]">

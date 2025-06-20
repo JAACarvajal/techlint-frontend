@@ -2,17 +2,36 @@
   <div class="w-11/12 m-12">
     <!-- <button type="button" @click.prevent="toggleModal('add')">Add</button> -->
     <!-- Filter -->
-    <!-- <Filter
-      :options="IP_MANAGEMENT_SEARCH_OPTIONS"
-      @filter="(fitlers) => filter(fitlers)"
-      :default-search="'address'"
-    /> -->
+    <div class="w-full flex justify-between">
+      <p class="text-2xl font-medium py-6">IP Management</p>
+      <div class="relative">
+        <Button
+          :text="'Show Filters'"
+          :class-name="'text-[14px] font-medium px-6 py-2.5 text-black my-4 bg-white border-none shadow-md hover:bg-[#D3C8F6] duration-300'"
+          @submit="toggleFilter"
+        >
+          <template #icon>
+            <FilterIcon />
+          </template>
+        </Button>
+        <div
+          v-show="showFilter"
+          class="absolute min-w-[400px] border border-[#E9EFF5] bg-white shadow-xl right-0 top-16 p-4 rounded-md"
+        >
+          <Filter
+            :options="IP_MANAGEMENT_SEARCH_OPTIONS"
+            @filter="(fitlers) => applyFilter(fitlers)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- <Filter :options="IP_MANAGEMENT_SEARCH_OPTIONS" @filter="(fitlers) => filter(fitlers)" /> -->
 
     <!-- Table -->
     <Table
-      :data="ipManagementStore.list.data"
+      :store="ipManagementStore"
       :headers="IP_MANAGEMENT_TABLE_HEADERS"
-      :pagination-data="ipManagementStore.list.meta"
       :loading="loading"
       @page:change="(page) => updatePage(page)"
       @toggle:edit="(ipId) => toggleModal('update', ipId)"
@@ -21,13 +40,13 @@
     >
       <template #column-group>
         <colgroup>
-          <col class="max-w-[330px]" />
-          <col class="max-w-[146px]" />
-          <col class="max-w-[175px]" />
-          <col class="max-w-[500px]" />
-          <col class="max-w-[400px]" />
-          <col class="max-w-[400px]" />
-          <col class="max-w-[300px]" />
+          <col class="w-[100px]" />
+          <col class="w-[100px]" />
+          <col class="w-[175px]" />
+          <col class="w-[400px]" />
+          <col class="w-[200px]" />
+          <col class="w-[200px]" />
+          <col class="w-[100px]" />
         </colgroup>
       </template>
     </Table>
@@ -61,46 +80,57 @@ import { useFilter } from '@/composables/useFilter'
 import { IP_MANAGEMENT_TABLE_HEADERS, IP_MANAGEMENT_SEARCH_OPTIONS } from '@/constants'
 import { scrollToElement } from '@/utils'
 import Form from '@/components/forms/Form.vue'
-import Filter from '@/components/Filter.vue'
 import Table from '@/components/tables/Table.vue'
 import Modal from '@/components/modals/Modal.vue'
+import Filter from '@/components/Filter.vue'
+import Button from './buttons/Button.vue'
+import FilterIcon from '@/components/icons/filters.svg'
 
 const { create, destroy, loading, list, update } = useIpAddress()
 const ipManagementStore = useIpManagementStore()
 const isAddModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
+const onUpdateId = ref(null)
+const showFilter = ref(false)
 const isFormModalVisible = computed(() => isAddModalVisible.value || isUpdateModalVisible.value)
 const formMode = computed(() => (isAddModalVisible.value ? 'add' : 'update'))
 const currentForm = computed(() =>
   formMode.value === 'add' ? addIpForm.value : updateIpForm.value,
 )
-const onUpdateId = ref(null)
 
-const blankForm = () => {
+function blankForm() {
   return { address: null, label: null, comment: null }
 }
 
-const getList = async (page) => {
+function getList(page) {
   ipManagementStore.setQueryPage(page)
-  await list()
-
-  // document.getElementById('pagination').scrollIntoView({ behavior: 'smooth' })
+  list()
 }
+
 const addIpForm = ref(blankForm())
 const updateIpForm = ref(blankForm())
 const sort = useSort(ipManagementStore, getList)
 const filter = useFilter(ipManagementStore, getList)
 
-const addIpAddress = () => {
+function applyFilter(filters) {
+  showFilter.value = !showFilter.value
+  filter(filters)
+}
+
+function toggleFilter() {
+  showFilter.value = !showFilter.value
+}
+
+function addIpAddress() {
   create(addIpForm.value)
   isAddModalVisible.value = false
 }
 
-const resetAddForm = () => {
+function resetAddForm() {
   addIpForm.value = blankForm()
 }
 
-const toggleModal = (action, id = null) => {
+function toggleModal(action, id = null) {
   if (action === 'add') {
     resetAddForm()
     isAddModalVisible.value = !isAddModalVisible.value
@@ -119,16 +149,17 @@ const toggleModal = (action, id = null) => {
   onUpdateId.value = id
 }
 
-const updateIpAddress = () => {
-  update(onUpdateId.value, updateIpForm.value)
+async function updateIpAddress() {
+  await update(onUpdateId.value, updateIpForm.value)
   isUpdateModalVisible.value = false
   onUpdateId.value = null
 }
 
-const updatePage = async (page) => {
+async function updatePage(page) {
   await getList(page)
   scrollToElement('#pagination')
 }
+
 onMounted(() => {
   getList()
 })

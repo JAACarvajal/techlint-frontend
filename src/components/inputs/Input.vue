@@ -1,37 +1,39 @@
 <template>
-  <div class="mb-8">
-    <div class="relative">
-      <!-- Label -->
-      <label class="font-medium text-[#444250] text-[15px]" :for="props.name">{{
-        props.label
-      }}</label>
+  <div class="relative">
+    <!-- Label -->
+    <label class="font-medium text-[#444250] text-[15px]" :for="props.name">{{
+      props.label
+    }}</label>
 
-      <!-- Input -->
-      <input
-        v-bind="props.inputAttrs"
-        :name="props.name"
-        ref="inputElement"
-        class="text-[14px] mt-1.5 px-4 py-2.5 border border-[#E9EFF5] bg-[#FAFAFA] rounded-md w-full font-medium text-[#444250] focus:outline-none focus:border-[#705ABF]"
-        :type="inputType"
-        :placeholder="props.placeholder"
-        :value="props.inputData"
-        @input="emit('update:data', $event.target.value)"
-      />
-      <div
-        class="absolute inset-y-0 right-3 top-7.5 flex items-center cursor-pointer"
-        @click.prevent="toggleInputVisibility"
-      >
-        <div v-if="props.toggleable">
-          <EyeIcon v-if="!showInput" />
-          <EyeIconSelected v-if="showInput" />
-        </div>
+    <!-- Input -->
+    <input
+      v-bind="props.inputAttrs"
+      :name="props.name"
+      ref="inputElement"
+      :class="[
+        'px-4 py-2.5 border border-[#E9EFF5] bg-[#FAFAFA] rounded-md text-[#444250] focus:outline-none focus:border-[#705ABF]',
+        className,
+      ]"
+      :type="inputType"
+      :placeholder="props.placeholder"
+      :value="props.inputData"
+      @input="emit('update:data', $event.target.value)"
+      @keyup.enter.prevent="emit('submit:enter')"
+    />
+    <div
+      class="absolute inset-y-0 right-3 top-7.5 flex items-center cursor-pointer"
+      @click.prevent="toggleInputVisibility"
+    >
+      <div v-if="props.toggleable">
+        <EyeIcon v-if="!showInput" />
+        <EyeIconSelected v-if="showInput" />
       </div>
     </div>
+  </div>
 
-    <!-- Error message -->
-    <div class="text-[14px] text-red-400 font-medium mt-1" v-show="props.error">
-      <p>{{ props.error }}</p>
-    </div>
+  <!-- Error message -->
+  <div class="text-[14px] text-red-400 font-medium mt-1" v-show="props.error">
+    <p>{{ props.error }}</p>
   </div>
 </template>
 
@@ -41,41 +43,17 @@ import EyeIcon from '@/components/icons/icon_eye.svg'
 import EyeIconSelected from '@/components/icons/icon_eye_selected.svg'
 
 const props = defineProps({
-  error: {
-    type: String,
-    default: '',
-  },
-  label: {
-    type: String,
-    default: 'Input',
-  },
-  inputAttrs: {
-    type: Object,
-    default: () => ({}),
-  },
-  inputData: {
-    type: String,
-    default: '',
-    required: true,
-  },
-  name: {
-    type: String,
-    default: 'Input',
-  },
-  placeholder: {
-    type: String,
-    default: 'Enter value',
-  },
-  toggleable: {
-    type: Boolean,
-    default: false,
-  },
-  type: {
-    type: String,
-    default: 'text',
-  },
+  className: { type: String, default: '' },
+  error: { type: String, default: '' },
+  label: { type: String, default: '' },
+  inputAttrs: { type: Object, default: () => ({}) },
+  inputData: { type: String, default: '', required: true },
+  name: { type: String, default: 'Input' },
+  placeholder: { type: String, default: 'Enter value' },
+  toggleable: { type: Boolean, default: false },
+  type: { type: String, default: 'text' },
 })
-const emit = defineEmits(['update:data', 'update:visible'])
+const emit = defineEmits(['update:data', 'update:visible', 'submit:enter'])
 const inputElement = ref(null)
 const showInput = ref(false)
 

@@ -22,12 +22,15 @@ export const IP_MANAGEMENT_TABLE_HEADERS = [
 ]
 
 export const IP_MANAGEMENT_SEARCH_OPTIONS = [
+  { label: 'Filter By Column', value: '', disabled: true },
   { label: 'Address', value: 'address' },
   { label: 'Label', value: 'label' },
   { label: 'Comment', value: 'comment' },
+  { label: 'User ID', value: 'userId' },
 ]
 
 export const DATE_SEARCH_OPTIONS = [
-  { label: 'Updated At', value: 'updatedAt' },
+  { label: 'Filter By Date', value: '', disabled: true },
   { label: 'Created At', value: 'createdAt' },
+  { label: 'Updated At', value: 'updatedAt' },
 ]

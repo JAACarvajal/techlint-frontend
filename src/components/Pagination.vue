@@ -16,18 +16,16 @@
 
 <script setup>
 defineProps({
-  paginationData: {
-    type: Object,
-    required: true,
-  },
+  paginationData: { type: Object, required: true },
 })
 
 const emit = defineEmits(['page:change'])
-const emitPageUpdate = (url) => {
+
+function emitPageUpdate(url) {
   emit('page:change', new URL(url).searchParams.get('page'))
 }
 
-const pageText = (label) => {
+function pageText(label) {
   if (label === 'Next &raquo;') return '⮞'
   if (label === '&laquo; Previous') return '⮜'
   return label

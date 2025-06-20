@@ -11,28 +11,34 @@
           </div>
 
           <!-- Email input -->
-          <Input
-            :input-data="email"
-            :input-attrs="emailAttrs"
-            :error="validationErrors.email"
-            :label="'Email'"
-            :placeholder="'Enter email address'"
-            :name="'email'"
-            @update:data="(input) => (email = input)"
-          />
+          <div class="mb-8">
+            <Input
+              :class-name="'text-[14px] mt-1.5 w-full font-medium'"
+              :input-data="email"
+              :input-attrs="emailAttrs"
+              :error="validationErrors.email"
+              :label="'Email'"
+              :placeholder="'Enter email address'"
+              :name="'email'"
+              @update:data="(input) => (email = input)"
+            />
+          </div>
 
           <!-- Password input -->
-          <Input
-            :input-data="password"
-            :input-attrs="passwordAttrs"
-            :error="validationErrors.password"
-            :type="'password'"
-            :label="'Password'"
-            :placeholder="'Enter password'"
-            :name="'password'"
-            :toggleable="true"
-            @update:data="(input) => (password = input)"
-          />
+          <div class="mb-8">
+            <Input
+              :class-name="'text-[14px] mt-1.5 w-full font-medium'"
+              :input-data="password"
+              :input-attrs="passwordAttrs"
+              :error="validationErrors.password"
+              :type="'password'"
+              :label="'Password'"
+              :placeholder="'Enter password'"
+              :name="'password'"
+              :toggleable="true"
+              @update:data="(input) => (password = input)"
+            />
+          </div>
 
           <!-- Login button -->
           <Button
@@ -40,6 +46,7 @@
             :type="'submit'"
             :loading="loading"
             :disabled="loading"
+            :class-name="'text-[14px] font-medium px-2 py-2.5 text-white mt-4'"
             @submit="() => login()"
           />
           <p class="text-xs mt-3 text-[#444250]">
