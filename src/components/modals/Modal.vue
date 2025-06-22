@@ -1,37 +1,25 @@
 <template>
-  <div v-if="visible" class="modal-overlay" @click.self="close">
-    <div class="modal-content">
-      <slot />
-      <button @click="close">Close</button>
+  <Transition name="modal">
+    <div
+      v-if="visible"
+      class="fixed top-0 left-0 w-[100vw] h-[100vh] bg-[#00000080] flex items-center justify-center z-999"
+    >
+      <div class="min-w-[500px] max-h-[600px] bg-white p-6 rounded-xl">
+        <div class="flex justify-between mb-6">
+          <h1 class="text-xl font-bold">{{ title }}</h1>
+          <span class="cursor-pointer" @click="() => emit('close')">⛌</span>
+        </div>
+        <slot name="content"></slot>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script setup>
-const props = defineProps({ visible: Boolean })
+defineProps({
+  title: String,
+  visible: Boolean,
+})
+
 const emit = defineEmits(['close'])
-
-function close() {
-  emit('close')
-}
 </script>
-
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  min-width: 300px;
-}
-</style>

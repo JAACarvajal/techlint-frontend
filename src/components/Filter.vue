@@ -1,6 +1,11 @@
 <template>
   <div>
     <form class="flex flex-col justify-between">
+      <div class="flex justify-between mb-3 font-medium t text-xl">
+        <span class="py-2">Filters</span>
+        <span class="pt-1 cursor-pointer" @click.prevent="() => emit('close')">⛌</span>
+      </div>
+
       <!-- Search -->
       <div class="flex justify-between mb-4">
         <Input
@@ -70,7 +75,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['filter'])
+const emit = defineEmits(['filter', 'close'])
 const endDate = ref('')
 const startDate = ref('')
 const date = ref([startDate, endDate])

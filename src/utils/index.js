@@ -13,5 +13,6 @@ export function scrollToElement(target, options = { behavior: 'smooth' }) {
   } else if (target instanceof HTMLElement) {
     el = target
   }
+
   if (el) el.scrollIntoView(options)
 }

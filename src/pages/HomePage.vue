@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen">
+  <div id="main" class="min-h-screen">
     <!-- Header -->
     <HeaderSection class="flex justify-between h-14 bg-[#705ABF] py-2 px-4 w-full" />
 

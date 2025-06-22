@@ -1,14 +1,15 @@
 <template>
   <div
-    class="border-t-1 rounded-lg flex-1 flex flex-col justify-start overflow-hidden shadow-md w-full bg-white"
+    class="rounded-2xl flex-1 flex flex-col justify-start max-h-[1000px] overflow-y-auto shadow-md w-full bg-white"
   >
-    <table class="w-full">
+    <!-- Table -->
+    <table class="min-w-full">
       <!-- Column group -->
       <slot name="column-group"></slot>
 
       <!-- Headers -->
       <thead>
-        <tr class="border border-[#444250]">
+        <tr class="sticky top-0 z-10">
           <th
             v-for="header in headers"
             :key="header.key"
@@ -142,6 +143,7 @@ function onPageChange(page) {
   emit('page:change', page)
 }
 
+// TODO: use hover for color, remove icon
 const ActionButton = defineComponent({
   props: { icon: String, onClick: Function },
   setup(props) {

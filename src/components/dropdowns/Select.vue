@@ -1,5 +1,5 @@
 <template>
-  <div :class="['relative inline-block', className]">
+  <div ref="selectRef" :class="['relative inline-block z-100', className]">
     <!-- Select button -->
     <button
       @click="toggle"
@@ -41,7 +41,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { useClickOutside } from '@/composables/useClickOutside'
 
 const props = defineProps({
   className: {
@@ -58,8 +59,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:select'])
-
 const open = ref(false)
+const selectRef = useClickOutside(close)
 const selectedSearch = ref(props.modelValue ?? '')
 
 const selectedLabel = computed(() => {
@@ -81,13 +82,4 @@ function select(value) {
   emit('update:select', value)
   close()
 }
-
-function onClickOutside(e) {
-  if (!e.target.closest('.relative')) close()
-}
-
-onMounted(() => {
-  document.addEventListener('click', onClickOutside)
-  return () => document.removeEventListener('click', onClickOutside)
-})
 </script>

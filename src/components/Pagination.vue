@@ -1,5 +1,5 @@
 <template>
-  <div id="pagination" class="flex justify-center pt-10">
+  <div class="flex justify-center pt-10">
     <a
       v-for="(page, index) in paginationData.links"
       :key="index"

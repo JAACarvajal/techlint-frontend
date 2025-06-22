@@ -17,6 +17,7 @@ export const useIpManagementStore = defineStore('ipManagement', {
         createdAt: null,
         updatedAt: null,
       },
+      rows: 10,
       sort: '-createdAt',
     },
   }),
@@ -29,6 +30,9 @@ export const useIpManagementStore = defineStore('ipManagement', {
     },
     setQuerySort(value) {
       this.query.sort = value
+    },
+    setQueryRows(value) {
+      this.query.rows = value
     },
     setQueryPage(value) {
       this.query.page = value

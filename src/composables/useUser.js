@@ -4,7 +4,6 @@ import { registerUser } from '@/services/userService'
 
 export function useUser() {
   const router = useRouter()
-
   const loading = ref(false)
   const errors = ref(null)
 

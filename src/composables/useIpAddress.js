@@ -5,6 +5,7 @@ import { useIpManagementStore } from '@/stores/ipAddress'
 export function useIpAddress() {
   const store = useIpManagementStore()
   const loading = ref(false)
+  const errors = ref(null)
 
   async function create(data) {
     loading.value = true
@@ -64,5 +65,6 @@ export function useIpAddress() {
     list,
     loading,
     update,
+    errors,
   }
 }
