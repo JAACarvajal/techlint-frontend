@@ -22,7 +22,6 @@ export const IP_MANAGEMENT_TABLE_HEADERS = [
 ]
 
 export const IP_MANAGEMENT_SEARCH_OPTIONS = [
-  { label: 'Filter By Column', value: '', disabled: true },
   { label: 'Address', value: 'address' },
   { label: 'Label', value: 'label' },
   { label: 'Comment', value: 'comment' },
@@ -30,7 +29,6 @@ export const IP_MANAGEMENT_SEARCH_OPTIONS = [
 ]
 
 export const DATE_SEARCH_OPTIONS = [
-  { label: 'Filter By Date', value: '', disabled: true },
   { label: 'Created At', value: 'createdAt' },
   { label: 'Updated At', value: 'updatedAt' },
 ]
@@ -42,3 +40,21 @@ export const ITEMS_PER_PAGE = [
   { label: '50', value: 50 },
   { label: '100', value: 100 },
 ]
+
+export const IP_MANAGEMENT_FORM_MAPPER = {
+  add: {
+    success_message: 'Successfully created an IP address',
+    button_text: 'Add',
+    form_title: 'Add IP address',
+  },
+  update: {
+    success_message: 'Successfully updated an IP address',
+    button_text: 'Update',
+    form_title: 'Update IP address',
+  },
+  delete: {
+    success_message: 'Successfully deleted an IP address',
+    button_text: 'Confirm Delete',
+    form_title: 'Delete IP address',
+  },
+}

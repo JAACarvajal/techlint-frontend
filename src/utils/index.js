@@ -16,3 +16,12 @@ export function scrollToElement(target, options = { behavior: 'smooth' }) {
 
   if (el) el.scrollIntoView(options)
 }
+
+export function isset(value) {
+  if (value === null) return false
+  if (value === undefined) return false
+  if (typeof value === 'object' && Object.keys(value).length === 0) return false
+  if (value.length === 0) return false
+
+  return true
+}

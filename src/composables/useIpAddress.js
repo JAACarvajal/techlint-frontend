@@ -9,11 +9,14 @@ export function useIpAddress() {
 
   async function create(data) {
     loading.value = true
+    errors.value = null
 
     try {
-      await createIp(data)
+      const response = await createIp(data)
 
-      list()
+      if (response.error) throw response.error
+    } catch (e) {
+      errors.value = e.error.errors
     } finally {
       loading.value = false
     }
@@ -21,11 +24,14 @@ export function useIpAddress() {
 
   async function destroy(id) {
     loading.value = true
+    errors.value = null
 
     try {
-      await deleteIp(id)
+      const response = await deleteIp(id)
 
-      list()
+      if (response.error) throw response.error
+    } catch (err) {
+      errors.value = err
     } finally {
       loading.value = false
     }
@@ -33,15 +39,22 @@ export function useIpAddress() {
 
   async function list() {
     loading.value = true
+    errors.value = null
 
     try {
-      const { data, links, meta } = await listIp(store.query)
+      const response = await listIp(store.query)
+
+      if (response.error) throw response.error
+
+      const { data, links, meta } = response
 
       store.setList({
         data: data,
         links: links,
         meta: meta,
       })
+    } catch (err) {
+      errors.value = err
     } finally {
       loading.value = false
     }
@@ -49,11 +62,14 @@ export function useIpAddress() {
 
   async function update(id, data) {
     loading.value = true
+    errors.value = null
 
     try {
-      await updateIp(id, data)
+      const response = await updateIp(id, data)
 
-      list()
+      if (response.error) throw response.error
+    } catch (e) {
+      errors.value = e.error.errors
     } finally {
       loading.value = false
     }

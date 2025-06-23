@@ -28,7 +28,7 @@ export async function listIp(queryParams) {
 
 export async function updateIp(id, data) {
   try {
-    const response = await api.put('/api/ip-addresses/' + id, {
+    const response = await api.put(`/api/ip-addresses/${id}`, {
       data: {
         attributes: data,
       },
@@ -42,7 +42,7 @@ export async function updateIp(id, data) {
 
 export async function deleteIp(id) {
   try {
-    const response = await api.delete('/api/ip-addresses/' + id)
+    const response = await api.delete(`/api/ip-addresses/${id}`)
 
     return response
   } catch (error) {

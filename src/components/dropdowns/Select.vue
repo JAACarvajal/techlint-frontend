@@ -21,7 +21,7 @@
     <!-- Dropdown -->
     <ul
       v-show="open"
-      class="absolute z-10 w-full mt-1 bg-white border border-[#E9EFF5] rounded shadow-lg max-h-60 overflow-y-auto transition-all"
+      class="absolute z-100 w-full mt-1 bg-white border border-[#E9EFF5] rounded shadow-lg max-h-60 overflow-y-auto transition-all"
       @keydown.esc="close"
     >
       <li

@@ -49,9 +49,7 @@ api.interceptors.response.use(
           api.defaults.headers.Authorization = `Bearer ${data.token}`
           originalRequest.headers.Authorization = `Bearer ${data.token}`
           return api(originalRequest)
-        } catch (err) {
-          console.log(err)
-
+        } catch {
           localStorage.removeItem('token')
           window.location.href = '/login'
         }

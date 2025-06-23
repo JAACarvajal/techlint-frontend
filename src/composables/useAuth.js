@@ -12,6 +12,7 @@ export function useAuth() {
 
   async function authenticate(credentials) {
     loading.value = true
+    errors.value = null
 
     try {
       const loginResponse = await login(credentials)
@@ -34,6 +35,7 @@ export function useAuth() {
 
   async function logout() {
     loading.value = true
+    errors.value = null
 
     try {
       const response = await logoutUser()

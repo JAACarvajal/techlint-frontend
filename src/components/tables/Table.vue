@@ -46,7 +46,7 @@
             v-for="header in headers"
             :key="header.key"
             :class="[
-              'px-6 py-2 text-center h-16',
+              'px-6 py-2 text-center h-16 text-ellipsis text-wrap',
               leftAlignedColumns.includes(header.key) ? 'text-left' : '',
             ]"
           >

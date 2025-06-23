@@ -3,7 +3,7 @@
     <Form>
       <template #form-body>
         <div
-          class="flex flex-col w-[32rem] h-[32rem] justify-center rounded-4xl shadow-2xl p-14 text-md mb-4"
+          class="flex flex-col w-[32rem] h-auto justify-center rounded-4xl shadow-2xl p-14 text-md mb-4 gap-y-4"
         >
           <!-- Title -->
           <div class="flex justify-center mb-8">
@@ -11,47 +11,46 @@
           </div>
 
           <!-- Email input -->
-          <div class="mb-8">
-            <Input
-              :class-name="'text-[14px] mt-1.5 w-full font-medium'"
-              :input-data="email"
-              :input-attrs="emailAttrs"
-              :error="validationErrors.email"
-              :label="'Email'"
-              :placeholder="'Enter email address'"
-              :name="'email'"
-              @update:data="(input) => (email = input)"
-            />
-          </div>
+          <Input
+            :input-data="email"
+            :input-attrs="emailAttrs"
+            :error="validationErrors.email"
+            :label="'Email'"
+            :placeholder="'Enter email address'"
+            :name="'email'"
+            class-name="w-full"
+            @update:data="(input) => (email = input)"
+          />
 
           <!-- Password input -->
-          <div class="mb-8">
-            <Input
-              :class-name="'text-[14px] mt-1.5 w-full font-medium'"
-              :input-data="password"
-              :input-attrs="passwordAttrs"
-              :error="validationErrors.password"
-              :type="'password'"
-              :label="'Password'"
-              :placeholder="'Enter password'"
-              :name="'password'"
-              :toggleable="true"
-              @update:data="(input) => (password = input)"
-            />
-          </div>
+          <Input
+            :input-data="password"
+            :input-attrs="passwordAttrs"
+            :error="validationErrors.password"
+            :type="'password'"
+            :label="'Password'"
+            :placeholder="'Enter password'"
+            :name="'password'"
+            :toggleable="true"
+            class-name="w-full"
+            @update:data="(input) => (password = input)"
+          />
 
           <!-- Login button -->
-          <Button
-            :text="'Login'"
-            :type="'submit'"
-            :loading="loading"
-            :disabled="loading"
-            class-name="text-[14px] font-medium px-2 py-2.5 text-white mt-4"
-            @submit="() => login()"
-          />
-          <p class="text-xs mt-3 text-[#444250]">
-            Don't have an account yet? <a class="text-[#705ABF]" href="/register">Register here</a>
-          </p>
+          <div>
+            <Button
+              text="Login"
+              type="submit"
+              :loading="loading"
+              :disabled="loading"
+              class-name="w-full text-[14px] font-medium px-2 py-2.5 text-white mt-4"
+              @submit="() => login()"
+            />
+            <p class="text-xs mt-2 text-[#444250]">
+              Don't have an account yet?
+              <a class="text-[#705ABF]" href="/register">Register here</a>
+            </p>
+          </div>
         </div>
       </template>
     </Form>

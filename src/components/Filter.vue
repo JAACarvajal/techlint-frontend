@@ -2,42 +2,44 @@
   <div>
     <form class="flex flex-col justify-between">
       <div class="flex justify-between mb-3 font-medium t text-xl">
-        <span class="py-2">Filters</span>
-        <span class="pt-1 cursor-pointer" @click.prevent="() => emit('close')">⛌</span>
+        <span>Filters</span>
+        <span class="cursor-pointer" @click.prevent="() => emit('close')">⛌</span>
       </div>
 
       <!-- Search -->
-      <div class="flex justify-between mb-4">
+      <p class="text-xs mb-1 text-[#43474b]">Filter by columns</p>
+      <div class="flex items-center mb-4 z-999 gap-x-2">
+        <Select
+          v-model="selectedSearch"
+          :options="props.options"
+          class-name="w-[170px]"
+          @update:select="(val) => (selectedSearch = val)"
+        />
         <Input
-          :name="'search'"
-          :class-name="'w-[320px] h-[39px] mr-2'"
-          :placeholder="'Search here...'"
+          name="search"
+          class-name="w-[270px] h-[39px]"
+          placeholder="Search here..."
           :input-data="search"
           @update:data="(val) => (search = val)"
           @submit:enter="handleFilterChange"
         />
-        <Select
-          v-model="selectedSearch"
-          :options="props.options"
-          :class-name="'w-[180px]'"
-          @update:select="(val) => (selectedSearch = val)"
-        />
       </div>
 
       <!-- Date search -->
-      <div class="flex justify-end mb-1 gap-2">
+      <p class="text-xs mb-1 text-[#43474b]">Filter by date</p>
+      <div class="flex justify-end mb-1 gap-x-2">
+        <Select
+          v-model="selectedDate"
+          :options="DATE_SEARCH_OPTIONS"
+          class-name="w-[285px]"
+          @update:select="(val) => (selectedDate = val)"
+        />
         <VueDatePicker
           placeholder="Select a date range"
           format="yyyy-MM-dd HH:mm:ss"
           v-model="date"
           range
           enable-seconds
-        ></VueDatePicker>
-        <Select
-          v-model="selectedDate"
-          :options="DATE_SEARCH_OPTIONS"
-          :class-name="'w-[285px]'"
-          @update:select="(val) => (selectedDate = val)"
         />
       </div>
 
@@ -76,19 +78,16 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['filter', 'close'])
-const endDate = ref('')
-const startDate = ref('')
-const date = ref([startDate, endDate])
+const date = ref(['', ''])
 const search = ref('')
-const selectedDate = ref('')
-const selectedSearch = ref(props.defaultSearch)
+const selectedDate = ref('createdAt')
+const selectedSearch = ref('address')
 
 const resetFilter = () => {
   search.value = ''
-  selectedSearch.value = props.defaultSearch
-  selectedDate.value = 'createdAt'
-  startDate.value = null
-  endDate.value = null
+  selectedSearch.value = ''
+  selectedDate.value = ''
+  date.value = ['', '']
 
   emit('filter')
 }
@@ -96,11 +95,11 @@ const resetFilter = () => {
 const handleFilterChange = () => {
   const filter = {}
 
-  if (selectedSearch.value) {
+  if (selectedSearch.value && search.value) {
     filter[selectedSearch.value] = search.value
   }
 
-  if (date.value && selectedDate.value) {
+  if (selectedDate.value && date.value[0] && date.value[1]) {
     filter[selectedDate.value] =
       dayjs(date.value[0]).format('YYYY-MM-DD HH:mm:ss') +
       ',' +

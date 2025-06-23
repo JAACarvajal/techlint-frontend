@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-6 right-6 z-50 flex flex-col gap-2">
+  <div class="fixed top-6 right-6 z-9999 flex flex-col gap-2">
     <div
       v-for="toast in toasts"
       :key="toast.id"
@@ -8,7 +8,7 @@
         toastType(toast),
       ]"
     >
-      <span v-if="toast.type === 'success'" class="mr-2">✔</span>
+      <span v-if="toast.type === 'success'" class="mr-2 text-green-400"> &check; </span>
       <span v-else-if="toast.type === 'error'" class="mr-2"> &times; </span>
       <span>{{ toast.message }}</span>
     </div>

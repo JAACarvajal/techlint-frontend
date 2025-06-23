@@ -3,7 +3,7 @@
     <Form>
       <template #form-body>
         <div
-          class="flex flex-col w-[32rem] h-auto justify-center rounded-4xl shadow-2xl p-14 text-md mb-4"
+          class="flex flex-col w-[32rem] h-auto justify-center rounded-4xl shadow-2xl p-14 text-md mb-4 gap-y-4"
         >
           <!-- Title -->
           <div class="flex justify-center mb-8">
@@ -18,6 +18,7 @@
             :label="'First name'"
             :placeholder="'Enter first name'"
             :name="'first_name'"
+            class-name="w-full"
             @update:data="(input) => (first_name = input)"
           />
 
@@ -29,6 +30,7 @@
             :label="'Last name'"
             :placeholder="'Enter last name'"
             :name="'last_name'"
+            class-name="w-full"
             @update:data="(input) => (last_name = input)"
           />
 
@@ -40,6 +42,7 @@
             :label="'Email'"
             :placeholder="'Enter email address'"
             :name="'email'"
+            class-name="w-full"
             @update:data="(input) => (email = input)"
           />
 
@@ -53,21 +56,24 @@
             :placeholder="'Enter password'"
             :name="'password'"
             :toggleable="true"
+            class-name="w-full"
             @update:data="(input) => (password = input)"
           />
 
           <!-- Login button -->
-          <Button
-            :text="'Register'"
-            :type="'submit'"
-            :loading="loading"
-            :disabled="loading"
-            :class-name="'text-[14px] font-medium px-2 py-2.5 text-white mt-4'"
-            @submit="() => submit()"
-          />
-          <p class="text-xs mt-3 text-[#444250]">
-            Already have an account? <a class="text-[#705ABF]" href="/login">Login here</a>
-          </p>
+          <div>
+            <Button
+              :text="'Register'"
+              :type="'submit'"
+              :loading="loading"
+              :disabled="loading"
+              class-name="w-full text-[14px] font-medium px-2 py-2.5 text-white mt-4"
+              @submit="() => submit()"
+            />
+            <p class="text-xs mt-2 text-[#444250]">
+              Already have an account? <a class="text-[#705ABF]" href="/login">Login here</a>
+            </p>
+          </div>
         </div>
       </template>
     </Form>

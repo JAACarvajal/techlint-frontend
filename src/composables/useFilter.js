@@ -1,8 +1,10 @@
 export function useFilter(store, getList) {
-  return (filters) => {
+  return async (filters, rowItems) => {
+    store.$reset()
+    store.setQueryRows(rowItems)
+
     if (filters === null || filters === undefined) {
-      store.$reset()
-      getList()
+      await getList()
       return
     }
 
@@ -10,6 +12,6 @@ export function useFilter(store, getList) {
       store.setQueryFilter(key, filters[key])
     }
 
-    getList()
+    await getList()
   }
 }
