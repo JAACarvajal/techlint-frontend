@@ -14,7 +14,7 @@
             v-for="header in headers"
             :key="header.key"
             class="text-[14px] px-4 py-6 text-white bg-[#444250] font-medium cursor-pointer"
-            @click.prevent="(key) => emit('sort:toggle', key)"
+            @click.prevent="() => emit('sort:toggle', header.key)"
           >
             <span>{{ sortIcon(header.key) }}&nbsp;&nbsp;{{ header.label }}</span>
           </th>
