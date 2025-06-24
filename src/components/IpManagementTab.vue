@@ -28,7 +28,7 @@
         <div class="flex justify-between items-center gap-3 relative">
           <div class="flex relative">
             <!-- Filter applied animation -->
-            <span v-show="filterApplied" class="absolute left-34 bottom-7">
+            <span v-show="filterApplied" class="absolute left-8 bottom-7">
               <span class="relative flex size-3">
                 <span
                   class="absolute right-0 inline-flex h-full w-full animate-ping rounded-full bg-[#705ABF] opacity-75"

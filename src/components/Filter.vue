@@ -74,6 +74,7 @@ const emit = defineEmits(['filter', 'close'])
 const props = defineProps({
   defaultSearch: {
     type: String,
+    default: '',
     required: true,
   },
   excludeDateOptions: {
@@ -94,8 +95,9 @@ const selectedSearch = ref(props.defaultSearch)
 
 function resetFilter() {
   search.value = ''
-  selectedSearch.value = ''
-  selectedDate.value = ''
+
+  selectedSearch.value = props.defaultSearch
+  selectedDate.value = 'createdAt'
   date.value = ['', '']
 
   emit('filter')

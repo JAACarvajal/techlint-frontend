@@ -44,7 +44,7 @@ const props = defineProps({
     default: '',
   },
   modelValue: {
-    required: false,
+    required: true,
   },
   options: {
     type: Array,
@@ -54,7 +54,7 @@ const props = defineProps({
 
 const selectRef = useClickOutside(close)
 const open = ref(false)
-const selectedSearch = ref(props.modelValue ?? '')
+const selectedSearch = computed(() => props.modelValue)
 const selectedLabel = computed(() => {
   const found = props.options.find((opt) => opt.value === selectedSearch.value)
   return found ? found.label : 'Filter by'
