@@ -3,16 +3,19 @@ export const AUDIT_LOG_TABLE_HEADERS = [
   { label: 'Action', key: 'action' },
   { label: 'Target Type', key: 'target_type' },
   { label: 'Target ID', key: 'target_id' },
+  { label: 'Changes', key: 'changes' },
   { label: 'Created At', key: 'created_at' },
-  { label: 'Updated At', key: 'updated_at' },
 ]
 
 export const AUDIT_LOG_SEARCH_OPTIONS = [
   { label: 'Target ID', value: 'targetId' },
+  { label: 'Target Type', value: 'targetType' },
   { label: 'Actor User ID', value: 'actorUserId' },
+  { label: 'Action', value: 'action' },
 ]
 
 export const IP_MANAGEMENT_TABLE_HEADERS = [
+  { label: 'ID', key: 'id' },
   { label: 'IP address', key: 'address' },
   { label: 'User ID', key: 'user_id' },
   { label: 'Label', key: 'label' },
@@ -22,6 +25,7 @@ export const IP_MANAGEMENT_TABLE_HEADERS = [
 ]
 
 export const IP_MANAGEMENT_SEARCH_OPTIONS = [
+  { label: 'ID', value: 'id' },
   { label: 'Address', value: 'address' },
   { label: 'Label', value: 'label' },
   { label: 'Comment', value: 'comment' },
@@ -32,6 +36,8 @@ export const DATE_SEARCH_OPTIONS = [
   { label: 'Created At', value: 'createdAt' },
   { label: 'Updated At', value: 'updatedAt' },
 ]
+
+export const LEFT_ALIGNED_COLUMNS = ['comment', 'label', 'changes']
 
 export const ITEMS_PER_PAGE = [
   { label: '10', value: 10 },
@@ -56,5 +62,26 @@ export const IP_MANAGEMENT_FORM_MAPPER = {
     success_message: 'Successfully deleted an IP address',
     button_text: 'Confirm Delete',
     form_title: 'Delete IP address',
+  },
+}
+
+export const USER_AUDIT_LOG_MAPPER = {
+  login: {
+    description: 'User has logged in',
+  },
+  logout: {
+    description: 'User has logged out',
+  },
+}
+
+export const IP_ADDRESS_AUDIT_LOG_MAPPER = {
+  create: {
+    description: 'User has <strong class="text-green-500">created</strong> an IP address',
+  },
+  update: {
+    description: 'User has <strong class="text-blue-500">updated</strong> an IP address',
+  },
+  delete: {
+    description: 'User has <strong class="text-red-500">deleted</strong> an IP address',
   },
 }

@@ -14,7 +14,7 @@
             v-for="header in headers"
             :key="header.key"
             class="text-[14px] px-4 py-6 text-white bg-[#444250] font-medium cursor-pointer"
-            @click.prevent="onSort(header.key)"
+            @click.prevent="(key) => emit('sort:toggle', key)"
           >
             <span>{{ sortIcon(header.key) }}&nbsp;&nbsp;{{ header.label }}</span>
           </th>
@@ -36,26 +36,48 @@
       </tbody>
 
       <!-- Data Rows -->
-      <tbody v-else>
+      <tbody v-if="store.list.data.length === 0 && !loading">
+        <tr>
+          <td :colspan="colspan" class="text-center">
+            <div class="flex justify-center py-[310px]">No items to show</div>
+          </td>
+        </tr>
+      </tbody>
+      <tbody v-if="store.list.data.length > 0 && !loading">
         <tr
-          v-for="ip in store.list.data"
-          :key="ip.id"
+          v-for="data in store.list.data"
+          :key="data.id"
           class="text-[#444250] border-1 border-[#e9eff5]"
         >
           <td
             v-for="header in headers"
             :key="header.key"
             :class="[
-              'px-6 py-2 text-center h-16 text-ellipsis text-wrap',
-              leftAlignedColumns.includes(header.key) ? 'text-left' : '',
+              'px-6 py-2 text-center h-16 text-ellipsis text-wrap break-words max-w-xs',
+              LEFT_ALIGNED_COLUMNS.includes(header.key) ? 'text-left' : '',
             ]"
           >
-            {{ ip.attributes[header.key] }}
+            <!-- ID column -->
+            <div v-if="header.key === 'id'">
+              <span>{{ data.id }}</span>
+            </div>
+
+            <!-- changes column -->
+            <div class="px-2" v-else-if="header.key === 'changes'">
+              <p>
+                <span v-html="formattedChangesMap[data.id].description"></span>
+
+                <ul v-if="'change_list' in formattedChangesMap[data.id]" class="list-disc list-inside">
+                  <li v-for="(actionItem) in formattedChangesMap[data.id].change_list" v-html="actionItem"></li>
+                </ul>
+              </p>
+            </div>
+            <span v-else>{{ data.attributes[header.key] }}</span>
           </td>
           <td v-if="withActions" class="px-6 py-2 text-center">
             <div class="flex flex-row justify-center">
-              <ActionButton v-if="canEdit(ip)" icon="edit" :onClick="() => onEdit(ip.id)" />
-              <ActionButton v-if="canDelete" icon="delete" :onClick="() => onDelete(ip.id)" />
+              <ActionButton v-if="canEdit(data)" icon="edit" :onClick="() => emit('toggle:edit', data.id)" />
+              <ActionButton v-if="canDelete" icon="delete" :onClick="() => emit('delete', data.id)" />
             </div>
           </td>
         </tr>
@@ -64,13 +86,14 @@
   </div>
 
   <!-- Pagination -->
-  <Pagination :pagination-data="store.list.meta" @page:change="onPageChange" />
+  <Pagination :pagination-data="store.list.meta" @page:change="(page) => emit('page:change', page)" />
 </template>
 
 <script setup lang="jsx">
 import { computed, defineComponent } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { toCamelCase } from '@/utils'
+import { IP_ADDRESS_AUDIT_LOG_MAPPER, USER_AUDIT_LOG_MAPPER, LEFT_ALIGNED_COLUMNS } from '@/constants'
 import Pagination from '@/components/Pagination.vue'
 import Edit from '@/components/icons/edit.svg'
 import EditHover from '@/components/icons/edit_hover.svg'
@@ -85,11 +108,17 @@ const props = defineProps({
   withActions: { type: Boolean, default: true },
 })
 
-const leftAlignedColumns = ['comment', 'label']
 const emit = defineEmits(['toggle:edit', 'delete', 'sort:toggle', 'page:change'])
 const authStore = useAuthStore()
 const canDelete = computed(() => authStore.user?.attributes?.is_admin)
 const colspan = computed(() => props.headers.length + (props.withActions ? 1 : 0))
+const formattedChangesMap = computed(() => {
+  const map = {}
+  for (const data of props.store.list.data) {
+    map[data.id] = formatChanges(data.attributes)
+  }
+  return map
+})
 
 function sortIcon(header) {
   const sortInfo = getSortInfo(header)
@@ -125,25 +154,36 @@ function getSortInfo(headerKey) {
     index: sortIdx !== -1 ? sortIdx + 1 : null, // for display
   }
 }
+function formatChanges(attributes) {
+  const targetType = attributes.target_type
+  const action = attributes.action
+  const changes = attributes.changes
+
+  if (targetType === 'user') {
+    return USER_AUDIT_LOG_MAPPER[action]
+  }
+
+  if (targetType === 'ip_address') {
+    const auditLogObj = { ...IP_ADDRESS_AUDIT_LOG_MAPPER[action] } // shallow copy if needed
+
+    if (action === 'update' || action === 'create') {
+      const changeList = []
+      for (const attribute of Object.keys(changes)) {
+        changeList.push(`${attribute} ⭢ <strong>${changes[attribute]}</strong>`)
+      }
+      auditLogObj['change_list'] = changeList
+    }
+
+    return auditLogObj
+  }
+
+  return {}
+}
 
 function canEdit(ip) {
   return authStore.user?.attributes?.is_admin || authStore.user?.id === ip.attributes.user_id
 }
 
-function onSort(key) {
-  emit('sort:toggle', key)
-}
-function onEdit(id) {
-  emit('toggle:edit', id)
-}
-function onDelete(id) {
-  emit('delete', id)
-}
-function onPageChange(page) {
-  emit('page:change', page)
-}
-
-// TODO: use hover for color, remove icon
 const ActionButton = defineComponent({
   props: { icon: String, onClick: Function },
   setup(props) {

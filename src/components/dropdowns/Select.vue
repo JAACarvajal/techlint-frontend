@@ -3,7 +3,7 @@
     <!-- Select button -->
     <button
       @click="toggle"
-      class="w-full h-[39px] bg-white border border-[#E9EFF5] text-[#A0A9B3] px-4 py-2.5 rounded flex justify-between items-center cursor-pointer"
+      class="w-full h-[39px] bg-white border border-[#E9EFF5] text-[#222325] px-4 py-2.5 rounded flex justify-between items-center cursor-pointer"
       type="button"
     >
       <span class="truncate">{{ selectedLabel }}</span>

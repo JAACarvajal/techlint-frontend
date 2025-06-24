@@ -30,7 +30,7 @@
       <div class="flex justify-end mb-1 gap-x-2">
         <Select
           v-model="selectedDate"
-          :options="DATE_SEARCH_OPTIONS"
+          :options="DATE_SEARCH_OPTIONS.filter((x) => !excludeDateOptions.includes(x.value))"
           class-name="w-[285px]"
           @update:select="(val) => (selectedDate = val)"
         />
@@ -75,15 +75,23 @@ const props = defineProps({
     default: () => [],
     required: true,
   },
+  defaultSearch: {
+    type: String,
+    required: true,
+  },
+  excludeDateOptions: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['filter', 'close'])
 const date = ref(['', ''])
 const search = ref('')
 const selectedDate = ref('createdAt')
-const selectedSearch = ref('address')
+const selectedSearch = ref(props.defaultSearch)
 
-const resetFilter = () => {
+function resetFilter() {
   search.value = ''
   selectedSearch.value = ''
   selectedDate.value = ''
@@ -92,7 +100,7 @@ const resetFilter = () => {
   emit('filter')
 }
 
-const handleFilterChange = () => {
+function handleFilterChange() {
   const filter = {}
 
   if (selectedSearch.value && search.value) {

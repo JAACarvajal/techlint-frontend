@@ -38,8 +38,7 @@
             </span>
 
             <Button
-              :text="'Show Filters'"
-              class-name="text-[14px] font-medium px-5 py-2 text-black bg-white border-none shadow-md hover:bg-[#D3C8F6] duration-300"
+              class-name="text-[14px] font-medium px-2.5 py-2 text-black bg-white border-none shadow-md hover:bg-[#D3C8F6] duration-300"
               @submit="toggleFilter"
             >
               <template #icon>
@@ -53,14 +52,14 @@
             class="absolute min-w-[500px] border border-[#E9EFF5] bg-white shadow-xl right-26 top-12 p-6 rounded-md z-100"
           >
             <Filter
+              default-search="id"
               :options="IP_MANAGEMENT_SEARCH_OPTIONS"
               @filter="(fitlers) => applyFilter(fitlers)"
               @close="() => closeFilter()"
             />
           </div>
           <Button
-            text="Add"
-            class-name="text-[14px] font-medium px-5 py-2 text-black bg-white border-none shadow-md hover:bg-[#D3C8F6] duration-300"
+            class-name="text-[14px] font-medium px-2.5 py-2 text-black bg-white border-none shadow-md hover:bg-[#D3C8F6] duration-300"
             @submit="toggleFormModal('add')"
           >
             <template #icon>
@@ -84,6 +83,7 @@
     >
       <template #column-group>
         <colgroup>
+          <col class="w-[40px]" />
           <col class="w-[100px]" />
           <col class="w-[100px]" />
           <col class="w-[175px]" />
@@ -239,6 +239,7 @@ const { create, destroy, loading, list, update, errors } = useIpAddress()
 const toast = useToastStore()
 const ipManagementStore = useIpManagementStore()
 const onUpdateId = ref(null)
+const onUpdateData = ref(null)
 const onDeleteIp = ref(null)
 const onDeleteId = ref(null)
 const showFilter = ref(false)
@@ -255,7 +256,7 @@ const filter = useFilter(ipManagementStore, getList)
 const schema = yup.object({
   address: yup.string().required().label('Address'),
   label: yup.string().required().min(1).max(30).label('Label'),
-  comment: yup.string().max(150).label('Comment'),
+  comment: yup.string().max(150).nullable().label('Comment'),
 })
 const {
   errors: validationErrors,
@@ -284,7 +285,7 @@ async function onValidationSuccess() {
   if (formMode.value === 'add') {
     await create(values)
   } else {
-    await update(onUpdateId.value, values)
+    await update(onUpdateId.value, formatChanges())
   }
 
   if (errors.value) {
@@ -303,11 +304,29 @@ async function onValidationSuccess() {
   getList()
 }
 
+function formatChanges() {
+  const changes = {}
+  for (const key of Object.keys(values)) {
+    if (onUpdateData.value[key] !== values[key]) {
+      changes[key] = values[key]
+    }
+  }
+  return changes
+}
+
 async function deleteIp() {
   await destroy(onDeleteId.value)
 
+  if (errors.value) {
+    toast.showToast(errors.value[0].message, 'error')
+
+    return
+  }
+
+  ipManagementStore.$reset()
   toggleDeleteModal()
-  getList()
+  await getList()
+  toast.showToast('Successfully deleted an IP address', 'success')
 }
 
 async function getList(page = 1) {
@@ -342,6 +361,7 @@ async function updatePageRows(numberOfRows) {
 }
 
 function toggleFormModal(action = 'add', id = null) {
+  resetForm()
   formMode.value = action
   isFormModalVisible.value = !isFormModalVisible.value
 
@@ -350,11 +370,10 @@ function toggleFormModal(action = 'add', id = null) {
     return
   }
 
-  const data = ipManagementStore.list.data.find((ip) => ip.id === id)?.attributes
-
-  ;(address.value = data?.address),
-    (label.value = data?.label),
-    (comment.value = data?.comment),
+  onUpdateData.value = ipManagementStore.list.data.find((ip) => ip.id === id)?.attributes
+  ;(address.value = onUpdateData.value?.address),
+    (label.value = onUpdateData.value?.label),
+    (comment.value = onUpdateData.value?.comment),
     (onUpdateId.value = id)
 }
 

@@ -17,6 +17,7 @@ export const useAuditLogStore = defineStore('auditLog', {
         createdAt: null,
         updatedAt: null,
       },
+      rows: 10,
       sort: '-createdAt',
     },
   }),
@@ -26,6 +27,9 @@ export const useAuditLogStore = defineStore('auditLog', {
     },
     setQuerySort(value) {
       this.query.sort = value
+    },
+    setQueryRows(value) {
+      this.query.rows = value
     },
     setQuery(value) {
       this.query = value
