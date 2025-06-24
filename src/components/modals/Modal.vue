@@ -18,10 +18,15 @@
 </template>
 
 <script setup>
-defineProps({
-  title: String,
-  visible: Boolean,
-})
-
 const emit = defineEmits(['close'])
+defineProps({
+  title: {
+    type: String,
+    default: 'Title',
+  },
+  visible: {
+    type: Boolean,
+    default: false,
+  },
+})
 </script>

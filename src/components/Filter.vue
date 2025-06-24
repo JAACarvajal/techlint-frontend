@@ -60,21 +60,17 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs'
+import '@vuepic/vue-datepicker/dist/main.css'
 import { ref } from 'vue'
 import { DATE_SEARCH_OPTIONS } from '@/constants'
 import Input from './inputs/Input.vue'
 import Button from './buttons/Button.vue'
 import Select from './dropdowns/Select.vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
-import dayjs from 'dayjs'
 
+const emit = defineEmits(['filter', 'close'])
 const props = defineProps({
-  options: {
-    type: Array,
-    default: () => [],
-    required: true,
-  },
   defaultSearch: {
     type: String,
     required: true,
@@ -83,9 +79,13 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  options: {
+    type: Array,
+    default: () => [],
+    required: true,
+  },
 })
 
-const emit = defineEmits(['filter', 'close'])
 const date = ref(['', ''])
 const search = ref('')
 const selectedDate = ref('createdAt')

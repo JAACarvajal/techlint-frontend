@@ -22,7 +22,7 @@ import { useToastStore } from '@/stores/toast'
 const toastStore = useToastStore()
 const { toasts } = storeToRefs(toastStore)
 
-const toastType = (toast) => {
+function toastType(toast) {
   return toast.type === 'success'
     ? 'text-green-700 border border-green-300'
     : toast.type === 'error'

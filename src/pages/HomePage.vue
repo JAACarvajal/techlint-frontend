@@ -18,10 +18,10 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import HeaderSection from '@/components/Header.vue'
 import Navigation from '@/components/Navigation.vue'
 import IpManagementTab from '@/components/IpManagementTab.vue'
 import AuditLogTab from '@/components/AuditLogTab.vue'
-import HeaderSection from '@/components/Header.vue'
 
 const router = useRouter()
 

@@ -5,8 +5,8 @@
       'cursor-pointer border rounded-md bg-[#705ABF] hover:bg-[#544191] disabled:bg-[#705ABF] disabled:cursor-not-allowed',
       className,
     ]"
-    :type="props.type"
     :disabled="loading"
+    :type="props.type"
     @click.prevent="emit('submit')"
   >
     <div class="flex items-center justify-center">
@@ -24,21 +24,14 @@
 </template>
 
 <script setup>
-import SpinningLoader from '@/components/loaders/spinning_icon.svg'
 import { ref } from 'vue'
+import SpinningLoader from '@/components/icons/spinning_icon.svg'
 
+const emit = defineEmits(['submit'])
 const props = defineProps({
   className: {
     type: String,
     default: 'text-[14px] font-medium px-2 py-2.5 text-white mt-4',
-  },
-  text: {
-    type: String,
-    default: '',
-  },
-  type: {
-    type: String,
-    default: 'button',
   },
   disabled: {
     type: Boolean,
@@ -48,8 +41,16 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  text: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: 'button',
+  },
 })
-const emit = defineEmits(['submit'])
+
 const el = ref(null)
 defineExpose({ el })
 </script>

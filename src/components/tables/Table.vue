@@ -29,7 +29,7 @@
         <tr>
           <td :colspan="colspan" class="text-center">
             <div class="flex justify-center py-[310px]">
-              <SpinningLoader />
+              <SpinningLoaderIcon />
             </div>
           </td>
         </tr>
@@ -95,12 +95,13 @@ import { useAuthStore } from '@/stores/auth'
 import { toCamelCase } from '@/utils'
 import { IP_ADDRESS_AUDIT_LOG_MAPPER, USER_AUDIT_LOG_MAPPER, LEFT_ALIGNED_COLUMNS } from '@/constants'
 import Pagination from '@/components/Pagination.vue'
-import Edit from '@/components/icons/edit.svg'
-import EditHover from '@/components/icons/edit_hover.svg'
-import Delete from '@/components/icons/delete.svg'
-import DeleteHover from '@/components/icons/delete_hover.svg'
-import SpinningLoader from '@/components/loaders/spinning_icon_black.svg'
+import EditIcon from '@/components/icons/edit.svg'
+import EditHoverIcon from '@/components/icons/edit_hover.svg'
+import DeleteIcon from '@/components/icons/delete.svg'
+import DeleteHoverIcon from '@/components/icons/delete_hover.svg'
+import SpinningLoaderIcon from '@/components/icons/spinning_icon_black.svg'
 
+const emit = defineEmits(['toggle:edit', 'delete', 'sort:toggle', 'page:change'])
 const props = defineProps({
   headers: { type: Array, default: () => [] },
   loading: { type: Boolean, default: false },
@@ -108,7 +109,6 @@ const props = defineProps({
   withActions: { type: Boolean, default: true },
 })
 
-const emit = defineEmits(['toggle:edit', 'delete', 'sort:toggle', 'page:change'])
 const authStore = useAuthStore()
 const canDelete = computed(() => authStore.user?.attributes?.is_admin)
 const colspan = computed(() => props.headers.length + (props.withActions ? 1 : 0))
@@ -190,10 +190,10 @@ const ActionButton = defineComponent({
     return () => (
       <button type="button" class="group cursor-pointer m-1" onClick={props.onClick}>
         <span class="block group-hover:hidden">
-          {props.icon === 'edit' ? <Edit /> : <Delete />}
+          {props.icon === 'edit' ? <EditIcon /> : <DeleteIcon />}
         </span>
         <span class="hidden group-hover:block">
-          {props.icon === 'edit' ? <EditHover /> : <DeleteHover />}
+          {props.icon === 'edit' ? <EditHoverIcon /> : <DeleteHoverIcon />}
         </span>
       </button>
     )

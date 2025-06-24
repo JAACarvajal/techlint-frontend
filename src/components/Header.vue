@@ -7,7 +7,7 @@
       <UserIcon width="24" height="24" />
       <p class="text-white">Hi, {{ auth?.user?.attributes?.first_name }}</p>
       <div class="ml-1 cursor-pointer p-1" @click.prevent="toggleSettings">
-        <ArrowDownIcon />
+        <ArrowDownIcon fill="#fff" />
         <ul
           ref="selectRef"
           v-show="showUserSetting"
@@ -51,6 +51,7 @@ const showUserSetting = ref(false)
 function toggleSettings() {
   showUserSetting.value = !showUserSetting.value
 }
+
 async function logoutUser() {
   await logout()
 
@@ -62,5 +63,3 @@ async function logoutUser() {
   toast.showToast('Logged out successfully', 'success')
 }
 </script>
-
-<style lang="scss" scoped></style>

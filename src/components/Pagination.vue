@@ -15,11 +15,10 @@
 </template>
 
 <script setup>
+const emit = defineEmits(['page:change'])
 defineProps({
   paginationData: { type: Object, required: true },
 })
-
-const emit = defineEmits(['page:change'])
 
 function emitPageUpdate(url) {
   emit('page:change', new URL(url).searchParams.get('page'))

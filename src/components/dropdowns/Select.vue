@@ -2,20 +2,12 @@
   <div ref="selectRef" :class="['relative inline-block z-100', className]">
     <!-- Select button -->
     <button
-      @click="toggle"
       class="w-full h-[39px] bg-white border border-[#E9EFF5] text-[#222325] px-4 py-2.5 rounded flex justify-between items-center cursor-pointer"
       type="button"
+      @click="toggle"
     >
       <span class="truncate">{{ selectedLabel }}</span>
-      <svg
-        class="w-4 h-4 text-[#A0A9B3] ml-2"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
+      <ArrowDownIcon fill="#000" />
     </button>
 
     <!-- Dropdown -->
@@ -43,26 +35,26 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useClickOutside } from '@/composables/useClickOutside'
+import ArrowDownIcon from '@/components/icons/arrow_down.svg'
 
+const emit = defineEmits(['update:select'])
 const props = defineProps({
   className: {
     type: String,
     default: '',
   },
+  modelValue: {
+    required: false,
+  },
   options: {
     type: Array,
     required: true,
   },
-  modelValue: {
-    required: false,
-  },
 })
 
-const emit = defineEmits(['update:select'])
-const open = ref(false)
 const selectRef = useClickOutside(close)
+const open = ref(false)
 const selectedSearch = ref(props.modelValue ?? '')
-
 const selectedLabel = computed(() => {
   const found = props.options.find((opt) => opt.value === selectedSearch.value)
   return found ? found.label : 'Filter by'
