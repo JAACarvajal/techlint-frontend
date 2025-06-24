@@ -1,9 +1,9 @@
 <template>
-  <div class="relative flex flex-col gap-1">
+  <div :class="['relative', containerClass]">
     <!-- Label -->
-    <label class="font-medium text-[#444250] text-[15px]" :for="props.name">{{
-      props.label
-    }}</label>
+    <label class="font-medium text-[#444250] text-[15px] mb-1" :for="props.name">
+      {{ props.label }}
+    </label>
 
     <div>
       <!-- Input -->
@@ -11,7 +11,7 @@
         v-bind="props.inputAttrs"
         ref="inputElement"
         :class="[
-          'px-4 py-2.5 border border-[#E9EFF5] bg-[#FAFAFA] rounded-md text-[#444250] focus:outline-none focus:border-[#705ABF]',
+          'px-4 py-3 border border-[#E9EFF5] bg-[#FAFAFA] rounded-[5px] text-[#444250] focus:outline-none focus:border-[#705ABF]',
           className,
         ]"
         :maxlength="maxLength"
@@ -23,7 +23,7 @@
         @keyup.enter.prevent="emit('submit:enter')"
       />
       <div
-        class="absolute inset-y-0 right-3 top-8 flex items-center cursor-pointer"
+        class="absolute inset-y-0 right-3 top-3.5 flex items-center cursor-pointer"
         @click.prevent="toggleInputVisibility"
       >
         <div v-if="props.toggleable">
@@ -33,7 +33,7 @@
       </div>
 
       <!-- Error message -->
-      <div class="text-[14px] text-red-400 font-medium mt-1" v-show="props.error">
+      <div v-if="props.error" class="text-[14px] text-red-400 font-medium mt-0.5">
         <p>{{ props.error }}</p>
       </div>
     </div>
@@ -48,6 +48,7 @@ import EyeIconSelected from '@/components/icons/icon_eye_selected.svg'
 const emit = defineEmits(['update:data', 'update:visible', 'submit:enter'])
 const props = defineProps({
   className: { type: String, default: '' },
+  containerClass: { type: String, default: '' },
   error: { type: String, default: '' },
   inputAttrs: { type: Object, default: () => ({}) },
   inputData: { type: String, default: '', required: true },

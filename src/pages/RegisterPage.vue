@@ -19,6 +19,7 @@
             :placeholder="'Enter first name'"
             :name="'first_name'"
             class-name="w-full"
+            container-class="flex flex-col h-[90px]"
             @update:data="(input) => (first_name = input)"
           />
 
@@ -31,6 +32,7 @@
             :placeholder="'Enter last name'"
             :name="'last_name'"
             class-name="w-full"
+            container-class="flex flex-col h-[90px]"
             @update:data="(input) => (last_name = input)"
           />
 
@@ -43,6 +45,7 @@
             :placeholder="'Enter email address'"
             :name="'email'"
             class-name="w-full"
+            container-class="flex flex-col h-[90px]"
             @update:data="(input) => (email = input)"
           />
 
@@ -57,6 +60,7 @@
             :name="'password'"
             :toggleable="true"
             class-name="w-full"
+            container-class="flex flex-col h-[90px]"
             @update:data="(input) => (password = input)"
           />
 

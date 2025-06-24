@@ -9,6 +9,7 @@ export function useUser() {
 
   async function register(data) {
     loading.value = true
+    errors.value = null
 
     try {
       const response = await registerUser(data)

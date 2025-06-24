@@ -49,7 +49,7 @@
           <div
             ref="filterRef"
             v-show="showFilter"
-            class="absolute min-w-[500px] border border-[#E9EFF5] bg-white shadow-xl right-26 top-12 p-6 rounded-md z-100"
+            class="absolute min-w-[500px] border border-[#E9EFF5] bg-white shadow-xl right-10 top-12 p-6 rounded-md z-100"
           >
             <Filter
               default-search="id"

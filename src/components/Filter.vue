@@ -18,6 +18,7 @@
         <Input
           name="search"
           class-name="w-[270px] h-[39px]"
+          container-class="items-center"
           placeholder="Search here..."
           :input-data="search"
           @update:data="(val) => (search = val)"

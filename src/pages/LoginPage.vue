@@ -19,6 +19,7 @@
             :placeholder="'Enter email address'"
             :name="'email'"
             class-name="w-full"
+            container-class="flex flex-col h-[90px]"
             @update:data="(input) => (email = input)"
           />
 
@@ -33,6 +34,7 @@
             :name="'password'"
             :toggleable="true"
             class-name="w-full"
+            container-class="flex flex-col h-[90px]"
             @update:data="(input) => (password = input)"
           />
 
