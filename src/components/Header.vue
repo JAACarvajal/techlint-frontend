@@ -29,6 +29,8 @@
 import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { useToastStore } from '@/stores/toast'
+import { useIpManagementStore } from '@/stores/ipAddress'
+import { useAuditLogStore } from '@/stores/auditLog'
 import { useAuthStore } from '@/stores/auth'
 import { useClickOutside } from '@/composables/useClickOutside'
 import LogoIcon from '@/components/icons/logo.svg'
@@ -46,6 +48,8 @@ const { errors, logout } = useAuth()
 const selectRef = useClickOutside(() => (showUserSetting.value = false))
 const toast = useToastStore()
 const auth = useAuthStore()
+const ipAddress = useIpManagementStore()
+const auditLog = useAuditLogStore()
 const showUserSetting = ref(false)
 
 function toggleSettings() {
@@ -60,6 +64,8 @@ async function logoutUser() {
     return
   }
 
+  ipAddress.$reset()
+  auditLog.$reset()
   toast.showToast('Logged out successfully', 'success')
 }
 </script>

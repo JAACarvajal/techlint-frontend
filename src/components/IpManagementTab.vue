@@ -323,10 +323,9 @@ async function deleteIp() {
     return
   }
 
-  ipManagementStore.$reset()
   toggleDeleteModal()
-  await getList()
   toast.showToast('Successfully deleted an IP address', 'success')
+  getList()
 }
 
 async function getList(page = 1) {

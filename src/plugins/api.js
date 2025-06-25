@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { sanitize } from '@/utils'
 
 const api = axios.create({
   baseURL: import.meta.env.GATEWAY_API_URL || 'http://localhost:54000',
@@ -19,10 +18,6 @@ api.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }
-    }
-
-    if (config.data !== undefined && config.data !== null) {
-      config.data.data.attributes = sanitize(config.data.data.attributes)
     }
 
     return config
@@ -46,12 +41,14 @@ api.interceptors.response.use(
         try {
           const { data } = await api.post('/api/auth/refresh')
           localStorage.setItem('token', data.attributes.token)
-          api.defaults.headers.Authorization = `Bearer ${data.token}`
-          originalRequest.headers.Authorization = `Bearer ${data.token}`
+          api.defaults.headers.Authorization = `Bearer ${data.attributes.token}`
+          originalRequest.headers.Authorization = `Bearer ${data.attributes.token}`
+
           return api(originalRequest)
-        } catch {
+        } catch (err) {
           localStorage.removeItem('token')
           window.location.href = '/login'
+          return Promise.reject(err)
         }
       }
 

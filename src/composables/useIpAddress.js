@@ -16,7 +16,7 @@ export function useIpAddress() {
 
       if (response.error) throw response.error
     } catch (e) {
-      errors.value = e.error.errors
+      errors.value = e.error?.errors
     } finally {
       loading.value = false
     }
@@ -69,7 +69,7 @@ export function useIpAddress() {
 
       if (response.error) throw response.error
     } catch (e) {
-      errors.value = e.error.errors
+      errors.value = e.error?.errors
     } finally {
       loading.value = false
     }
